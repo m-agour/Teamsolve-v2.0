@@ -6,6 +6,7 @@ from .application.user import *
 from .application.team import Team, find_team_by_id
 from .application.problem import *
 from .application.set import *
+from . import *
 from .codeforces.codeforces_api import *
 
 views = Blueprint("views", __name__)
@@ -25,7 +26,7 @@ def home():
                                code='', team_mates=[], colors=[])
 
     # update_user_and_mates(team)
-    check_my_set()
+    check_set(team)
 
     thread1 = Thread(target=update_user_and_mates, args=(team,))
     thread2 = Thread(target=new_day, args=(team,))
@@ -36,7 +37,7 @@ def home():
     thread2.start()
 
     sol = get_today_solved_problems_ids(get_current_user())
-    problems = get_today_problems()
+    problems = get_today_problems(team.id)
     team_mates = get_team_mates(current_user)
     team_mates_ind = range(len(team_mates))
     team_mates = [(team_mates[i].name, len(get_today_solved_problems(team_mates[i])), i,
@@ -62,7 +63,7 @@ def settings():
     if not get_current_user().team_id:
         return redirect(url_for('views.home'))
 
-    set_problems_count = get_set().count
+    set_problems_count = get_current_set().count
     sets = list(Set.objects)
 
     if request.method == 'POST':
@@ -224,7 +225,12 @@ def get_team(tid):
     return find_team_by_id(tid)
 
 
-def get_set():
+def get_set(set_id):
+    my_set = find_set_by_id(set_id)
+    return my_set
+
+
+def get_current_set():
     set_id = get_current_team().set_id
     my_set = find_set_by_id(set_id)
     return my_set
@@ -255,18 +261,18 @@ def get_today_problems(team_id):
     return [find_problem_by_id(i) for i in my_set.problems_ids[start:end]]
 
 
-def get_today_problems_names():
-    return [i.name for i in get_today_problems()]
+def get_today_problems_names(team_id):
+    return [i.name for i in get_today_problems(team_id)]
 
 
 def get_today_solved_problems(user: User):
-    today = get_today_problems()
+    today = get_today_problems(user.team_id)
     solved_today = [x for x in today if x.id in user.solved_ids]
     return solved_today
 
 
 def get_today_unsolved_problems(user: User):
-    today_problems = get_today_problems()
+    today_problems = get_today_problems(user.team_id)
     solved_problems = get_today_solved_problems(user)
     return [i for i in today_problems if i not in solved_problems]
 
@@ -290,17 +296,18 @@ def new_day(team):
     if is_new_day(team):
         if is_someone_solved_today(team):
             set_dues(team)
-            my_set = get_set()
             team.index += team.daily_goal
 
-            if team.index > my_set.count:
+            if team.index > get_set(team.set_id).count:
                 team.index = 1
                 team.set_id += 1
-            check_my_set()
+            check_set(team)
             team.solved_today = False
             team.last_updated = get_date_cairo()
             team.save()
-            return redirect(url_for('views.home'))
+
+            with app.app_context():
+                return redirect(url_for('views.home'))
 
 
 def set_dues(team):
@@ -347,7 +354,7 @@ def update_user_and_mates(team):
     lst = get_team_members(team.id)
     for i in lst:
         if update_user_solved_problems(i):
-            get_current_team().solved_today = True
+            team.solved_today = True
             changes = True
             team.save()
             print("hello")
@@ -361,9 +368,9 @@ def update_all_teams():
         update_user_and_mates(team)
 
 
-def check_my_set():
-    if not get_set() or not get_set().count:
-        team = get_current_team()
+def check_set(team):
+    my_set = get_set(team.set_id)
+    if not my_set or not my_set.count:
         team.set_id = 1
         team.index = 1
         team.save()
