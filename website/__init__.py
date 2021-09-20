@@ -60,4 +60,3 @@ if not find_set_by_id(2):
 if not find_user_by_id(1):
     set_my_team()
 
-

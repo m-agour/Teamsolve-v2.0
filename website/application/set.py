@@ -13,8 +13,6 @@ class Set(mongoengine.Document):
     }
 
 
-
 def find_set_by_id(sid: int):
-    print(sid)
     my_set = Set.objects(id=sid).first()
     return my_set

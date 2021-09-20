@@ -1,8 +1,9 @@
-from application.user import *
-from application.team import Team, find_team_by_id
-from application.problem import *
-from application.set import *
-from codeforces.codeforces_api import *
+from website.application.user import *
+from website.application.team import Team, find_team_by_id
+from website.application.problem import *
+from website.application.set import *
+from website.codeforces.codeforces_api import *
+from website.additional import *
 
 
 def load_problems():
@@ -16,13 +17,14 @@ def load_problems():
             name = name[:45] + '...'
         prob = Problem(code=problems[i][0], name=name, judge='Codeforces')
         prob.save()
-        new_set.problems_ids.append(prob)
+        new_set.problems_ids.append(prob.id)
         new_set.count += 1
     new_set.save()
 
 
 def set_my_team():
-    my_team = Team(name='Error Squad', daily_goal=3, index=51, set_id=1, last_updated=get_date_cairo(), solved_today=True)
+    date = get_date_cairo()
+    my_team = Team(name='Error Squad', daily_goal=3, index=51, set_id=1, last_updated=date, solved_today=True)
     my_team.save()
 
     user1 = User(email='mohamedelfeky250@gmail.com', handle='Mohamed.-.Elfeky',
@@ -60,8 +62,7 @@ def load_sets():
             if code in existing_problems_codes:
                 problem = existing_problems[existing_problems_codes.index(code)]
             else:
-                problem = Problem(code=prob['code'], name=name, rating=9999, solveCount=0,
-                                  judge='Codeforces')
+                problem = Problem(code=prob['code'], name=name, judge='Codeforces')
                 problem.save()
 
             new_set.problems_ids.append(problem.id)

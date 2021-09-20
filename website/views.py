@@ -48,7 +48,6 @@ def home():
     # thread.daemon = True
     # thread.start()
 
-    print(problems)
     return render_template("home.html", user=user, team=team, problems=problems, solved=sol,
                            code=generate_invitation_code(team.id), team_mates=team_mates, colors=colors, dues=dues)
 
@@ -204,7 +203,7 @@ def get_today_problems():
     my_set = find_set_by_id(set_id)
     start = get_team().index
     end = min(start + get_daily_goal(), my_set.count + 1)
-    return [find_problem_by_id(i) for i in my_set.problems_ids[start:end]]
+    return [print(i) for i in my_set.problems_ids[start:end]]
 
 
 def get_today_problems_names():
@@ -274,7 +273,7 @@ def update_user_solved_problems(user):
     for code in solved_on_codeforces:
         problem = find_problem_by_code(code)
         if not problem:
-            problem = Problem(name=code, code=code, judge='codeforces')
+            problem = Problem(name=code, code=code, judge='Codeforces')
             problem.save()
         if problem.id not in user.solved_ids:
             if problem in user.due_ids:
