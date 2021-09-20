@@ -43,7 +43,7 @@ def set_my_team():
 
 
 def load_sets():
-    sets = json.load(open('codeforces/sets.json'))
+    sets = json.load(open('website/codeforces/sets.json'))
 
     existing_problems = Problem.objects
     existing_problems_codes = [x.code for x in existing_problems]
@@ -62,7 +62,7 @@ def load_sets():
             if code in existing_problems_codes:
                 problem = existing_problems[existing_problems_codes.index(code)]
             else:
-                problem = Problem(code=prob['code'], name=name, judge='Codeforces')
+                problem = Problem(code=prob['code'], name=name, judge=judge)
                 problem.save()
 
             new_set.problems_ids.append(problem.id)

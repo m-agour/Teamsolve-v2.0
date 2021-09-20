@@ -12,7 +12,7 @@
 {% block content %}
 <div style="padding: 49px;">
    <form method="POST">
-      <h3 {% if user.darkMode %}  class="text-white mb-0" {% else %} class="text-dark mb-0" {% endif %} style="color: black; "  align="center">Settings</h3>
+      <h3 {% if user.settings['darkMode'] %}  class="text-white mb-0" {% else %} class="text-dark mb-0" {% endif %} style="color: black; "  align="center">Settings</h3>
       <br>
       <div class="row">
          <div class="col order-first" >
@@ -50,7 +50,7 @@
                <br>
                <div class="form-group" style="margin-top: 20px; margin-left: 20px; margin-right:20px; ">
                   <label style="width: 100px;color: black;" form="name">Daily goal</label>
-                  <input type="number" style="width: 400px;color: red; text-align: center;font-weight: bold" step="1" min="1" max="50" value="{{team.problemsNum}}" class="form-control" id="number" name="number" placeholder="Enter problems number per day">
+                  <input type="number" style="width: 400px;color: red; text-align: center;font-weight: bold" step="1" min="1" max="50" value="{{team.daily_goal}}" class="form-control" id="number" name="number" placeholder="Enter problems number per day">
                </div>
                <br>
                <div class="form-group" style="margin-left: 20px; margin-right:20px; margin-bottom: 40px ">
@@ -67,17 +67,17 @@
                <h4 class="text-dark fw-bold m-0" >Ladders</h4>
                </div>
                <br>
-               <ul style=" max-height: 400px;margin-bottom: 10px;overflow-y: auto;-webkit-overflow-scrolling: touch; margin-right:20px">
-                   {% for set, length in sets %}
+               <ul style=" max-height: 655px;margin-bottom: 10px;overflow-y: auto;-webkit-overflow-scrolling: touch; margin-right:20px">
+                   {% for set in sets %}
                     <li class="list-group-item " >
                        <div class="form-check" style="margin-right:20px; max-height: 10px">
-                          <input class="form-check-input" type="radio" value='{{ set.id }}' name='radio' id='{{ set.name }}' {% if team.setId == set.id %}checked {% endif %}>
+                          <input class="form-check-input" type="radio" value='{{ set.id }}' name='radio' id='{{ set.name }}' {% if team.set_id == set.id %}checked {% endif %}>
                           <label class="form-check-label" for='{{ set.name }}'>
                              <p>{{ set.name}} </p>
                           </label>
 
                           <label for='{{ set.name }}' style="color: red ; text-align: right">
-                              <p> - ({{length}})</p>
+                              <p> - ({{set.count}})</p>
                           </label>
                        </div>
                     </li>

@@ -11,12 +11,12 @@
 
 
 {% block content %}
-{% if not user.teamId %}
+{% if not user.team_id %}
 <div class="col text-center" style="margin: 1px;"><a class="btn btn-primary btn-sm d-none d-sm-inline-block" role="button" href="/create-team" style="padding-right: 2;padding-bottom: 2;padding-left: 2;padding-top: 2;height: 30.8px;width: 121.325px;"><i class="fas fa-plus fa-sm text-white-50"></i>&nbsp;Create Team</a><a class="btn btn-primary btn-sm d-none d-sm-inline-block" role="button" href="/join-team" style="margin: 13px;"><i class="fas fa-road fa-sm text-white-50"></i>&nbsp; Join Existing Team</a></div>
 {% else %}
 <div class="container-fluid" >
    <div class="d-sm-flex justify-content-between align-items-center mb-4">
-      <h3 {% if user.darkMode %}  class="text-white mb-0" {% else %} class="text-dark mb-0" {% endif %}> Hello, {{ user.name.split()[0] }} </h3>
+      <h3 {% if user.settings['darkMode']  %}  class="text-white mb-0" {% else %} class="text-dark mb-0" {% endif %}> Hello, {{ user.name.split()[0] }} </h3>
    </div>
    <div class="card-group"></div>
    <div class="row">
@@ -60,12 +60,17 @@
                   <li class="list-group-item" {% if problem.id in solved %} style="background-color: springgreen;" {% else %} style="background-color: mintcream;" {% endif %} >
                   <div class="row align-items-center no-gutters">
                      <div class="col me-2"><span style="font-size: 20px;font-weight: bold;font-family: Nunito, sans-serif;">{{ problem.name }}</span></div>
-                     {% set url = 'https://codeforces.com/problemset/problem/' + problem.code %}
+                     {% if problem.judge == 'Codeforces' %}
+                         {% set url = 'https://codeforces.com/problemset/problem/' + problem.code %}
+                     {% elif problem.judge == 'SPOJ' %}
+                         {% set url = 'https://www.spoj.com/problems/' + problem.code %}
+                     {% endif %}
+
                      <div class="col-auto">
                         {% if problem.id not in solved and False %}
                         <button class="btn btn-primary" type="button" style="text-align: center;padding-right: 11px;margin-right: 18px;height: 35px;width: 86.125px;" onclick="window.location.href='{{ url_for( "views.solved", num=problem.id,  type="new") }}';">Solved?</button>
                         {% endif %}
-                        <button  class="btn btn-primary" type="button" target='_blank'  style="text-align: center;padding-right: 11px;margin-left: 0px;height: 35px;width: 105.125px;margin-right: 0px;background: rgb(162,62,239);color: var(--bs-body-bg);border-style: none;border-color: var(--bs-blue);" onclick= "window.open('{{url}}','_blank');return false;">Codeforces</button>
+                        <button  class="btn btn-primary" type="button" target='_blank'  style="text-align: center;padding-right: 11px;margin-left: 0px;height: 35px;width: 105.125px;margin-right: 0px;background: rgb(162,62,239);color: var(--bs-body-bg);border-style: none;border-color: var(--bs-blue);" onclick= "window.open('{{url}}','_blank');return false;"> {{problem.judge}} </button>
                      </div>
                   </div>
                   </li>
