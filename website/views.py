@@ -25,16 +25,17 @@ def home():
         return render_template("home.html", user=user, team=None, problemset=[], solved=[],
                                code='', team_mates=[], colors=[])
 
-    # update_user_and_mates(team)
+    update_user_and_mates(team)
+    new_day(team)
     check_set(team)
 
-    thread1 = Thread(target=update_user_and_mates, args=(team,))
-    thread2 = Thread(target=new_day, args=(team,))
-
-    thread1.daemon = True
-    thread1.start()
-    thread2.daemon = True
-    thread2.start()
+    # thread1 = Thread(target=update_user_and_mates, args=(team,))
+    # thread2 = Thread(target=new_day, args=(team,))
+    #
+    # thread1.daemon = True
+    # thread1.start()
+    # thread2.daemon = True
+    # thread2.start()
 
     sol = get_today_solved_problems_ids(get_current_user())
     problems = get_today_problems(team.id)
@@ -184,7 +185,6 @@ def createTeam():
             flash('Woo! take it easy champ, leave some for next month. (max is 50 per day)', category='error')
 
         else:
-
             team = Team(name=name, daily_goal=number, members_ids=[current_user.id], set_id=0)
             team.save()
 
@@ -269,7 +269,6 @@ def get_today_solved_problems(user: User):
     today = get_today_problems(user.team_id)
     solved_today = [x for x in today if x.id in user.solved_ids]
     return solved_today
-
 
 def get_today_unsolved_problems(user: User):
     today_problems = get_today_problems(user.team_id)
@@ -357,7 +356,6 @@ def update_user_and_mates(team):
             team.solved_today = True
             changes = True
             team.save()
-            print("hello")
     if changes:
         return redirect(url_for('views.home'))
 
