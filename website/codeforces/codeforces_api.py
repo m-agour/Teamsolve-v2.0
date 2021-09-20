@@ -51,8 +51,8 @@ def generate_problems_stats():
 
 def get_solved_problems(handle):
     solved = []
-    user = get_user_submissions(handle)
     try:
+        user = get_user_submissions(handle)
         for i in user['result']:
             p = i['problem']
             if i["verdict"] == 'OK':

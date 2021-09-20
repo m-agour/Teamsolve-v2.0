@@ -1,6 +1,6 @@
-import datetime
-from flask_login import login_user, login_required, logout_user, current_user
-import pytz
+from threading import Thread
+
+from flask_login import login_required, current_user
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from .application.user import *
 from .application.team import Team, find_team_by_id
@@ -17,15 +17,23 @@ def home():
     if request.method == 'POST':
         current_user.toggle_dark_mode()
 
-    team = get_team()
+    team = get_current_team()
     user = current_user
 
     if not team:
         return render_template("home.html", user=user, team=None, problemset=[], solved=[],
                                code='', team_mates=[], colors=[])
 
-    update_user_and_mates(team)
-    new_day(team)
+    # update_user_and_mates(team)
+    check_my_set()
+
+    thread1 = Thread(target=update_user_and_mates, args=(team,))
+    thread2 = Thread(target=new_day, args=(team,))
+
+    thread1.daemon = True
+    thread1.start()
+    thread2.daemon = True
+    thread2.start()
 
     sol = get_today_solved_problems_ids(get_current_user())
     problems = get_today_problems()
@@ -41,13 +49,8 @@ def home():
     while len(colors) < len(team_mates):
         colors += colors
 
-    team = get_team()
+    team = get_current_team()
     dues = get_dues_list(get_current_user())
-
-    # thread = Thread(target=update_user_and_mates, args=(team,))
-    # thread.daemon = True
-    # thread.start()
-    print(sol)
 
     return render_template("home.html", user=user, team=team, problems=problems, solved=sol,
                            code=generate_invitation_code(team.id), team_mates=team_mates, colors=colors, dues=dues)
@@ -68,22 +71,22 @@ def settings():
             # team settings
             name = request.form.get('name')
             # user settings
-            user_name = request.form.get('name')
-            email = request.form.get('name')
-            password = request.form.get('name')
+            user_name = request.form.get('username')
+            email = request.form.get('email')
+            password = request.form.get('password')
 
             try:
                 daily_goal = int(request.form.get('number'))
             except:
                 flash("Please enter the goal.", category='error')
-                return render_template("settings.html", user=get_current_user(), team=get_team(), sets=sets,
+                return render_template("settings.html", user=get_current_user(), team=get_current_team(), sets=sets,
                                        set_count=set_problems_count)
 
             try:
                 index = int(request.form.get('index'))
             except:
                 flash("Please enter the index.", category='error')
-                return render_template("settings.html", user=get_current_user(), team=get_team(), sets=sets,
+                return render_template("settings.html", user=get_current_user(), team=get_current_team(), sets=sets,
                                        set_count=set_problems_count)
 
             user = find_user_by_email(email)
@@ -97,7 +100,7 @@ def settings():
             elif not name:
                 flash('Please enter the team name.', category='error')
 
-            if not user_name:
+            elif not user_name:
                 flash('Please enter your name.', category='error')
 
             elif daily_goal <= 0:
@@ -112,18 +115,32 @@ def settings():
             elif index > set_problems_count:
                 flash('Index is so large.', category='error')
 
-            elif len(password) < 5:
+            elif password and len(password) < 5:
                 flash('Password must be at least 5 characters.', category='error')
 
             else:
-                team = get_team()
+                team = get_current_team()
+                user = get_current_user()
                 team.name = name
                 team.daily_goal = daily_goal
                 team.index = index
                 if set_id != team.set_id:
                     team.set_id = set_id
-                    team.index = 0
+                    team.index = 1
                 team.save()
+
+                if user.name != user_name:
+                    user.name = user_name
+
+                if user.email != email:
+                    user.email = email
+
+                if password:
+                    print(password)
+                    user.password = generate_password_hash(password)
+
+                user.save()
+
                 flash('Settings has been modified.', category='success')
                 return redirect(url_for('views.settings'))
 
@@ -133,7 +150,7 @@ def settings():
             flash('You left the team!', category='success')
             return redirect(url_for('views.home'))
 
-    return render_template("settings.html", user=get_current_user(), team=get_team(), sets=sets,
+    return render_template("settings.html", user=get_current_user(), team=get_current_team(), sets=sets,
                            set_count=set_problems_count)
 
 
@@ -199,12 +216,16 @@ def joinTeam():
     return render_template("join-team.html", user=current_user)
 
 
-def get_team():
-    return find_team_by_id(current_user.team_id)
+def get_current_team():
+    return find_team_by_id(get_current_user().team_id)
+
+
+def get_team(tid):
+    return find_team_by_id(tid)
 
 
 def get_set():
-    set_id = get_team().set_id
+    set_id = get_current_team().set_id
     my_set = find_set_by_id(set_id)
     return my_set
 
@@ -213,20 +234,24 @@ def get_current_user() -> User:
     return find_user_by_id(current_user.id)
 
 
+def get_user(uid) -> User:
+    return find_user_by_id(uid)
+
+
 def get_problem(problem_id):
     return find_problem_by_id(problem_id)
 
 
 def get_daily_goal():
-    return get_team().daily_goal
+    return get_current_team().daily_goal
 
 
-def get_today_problems():
-    check_my_set()
-    set_id = get_team().set_id
+def get_today_problems(team_id):
+    team = get_team(team_id)
+    set_id = team.set_id
     my_set = find_set_by_id(set_id)
-    start = get_team().index - 1
-    end = min(start + get_daily_goal(), my_set.count + 1)
+    start = team.index - 1
+    end = min(start + team.daily_goal, my_set.count + 1)
     return [find_problem_by_id(i) for i in my_set.problems_ids[start:end]]
 
 
@@ -261,6 +286,7 @@ def get_team_mates(user: User):
 
 
 def new_day(team):
+
     if is_new_day(team):
         if is_someone_solved_today(team):
             set_dues(team)
@@ -274,6 +300,7 @@ def new_day(team):
             team.solved_today = False
             team.last_updated = get_date_cairo()
             team.save()
+            return redirect(url_for('views.home'))
 
 
 def set_dues(team):
@@ -316,11 +343,16 @@ def update_user_solved_problems(user):
 
 
 def update_user_and_mates(team):
+    changes = False
     lst = get_team_members(team.id)
     for i in lst:
         if update_user_solved_problems(i):
-            get_team().solved_today = True
+            get_current_team().solved_today = True
+            changes = True
             team.save()
+            print("hello")
+    if changes:
+        return redirect(url_for('views.home'))
 
 
 def update_all_teams():
@@ -331,7 +363,7 @@ def update_all_teams():
 
 def check_my_set():
     if not get_set() or not get_set().count:
-        team = get_team()
+        team = get_current_team()
         team.set_id = 1
         team.index = 1
         team.save()
@@ -342,7 +374,7 @@ def check_my_set():
 def solved():
     problem_id = int(request.args.get('id'))
     new = request.args.get('type') == 'new'
-    team = get_team()
+    team = get_current_team()
     user = get_current_user()
 
     user.set_solved(problem_id)
