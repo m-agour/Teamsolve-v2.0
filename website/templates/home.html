@@ -1,0 +1,136 @@
+{% extends "index.html" %} {% block title %}Home{% endblock %}
+{% block dark %}
+
+<form method="POST">
+   <div class="form-check form-switch" style="margin-top: 5px;font-size: 18px; margin-right: 30px;">
+  <input class="form-check-input" onclick="this.form.submit()" type="checkbox" id="switch" {% if user.settings['darkMode'] %} checked {% endif %}>
+  <label class="form-check-label" for="switch">Dark mode</label>
+   </div>
+</form>
+{% endblock %}
+
+
+{% block content %}
+{% if not user.teamId %}
+<div class="col text-center" style="margin: 1px;"><a class="btn btn-primary btn-sm d-none d-sm-inline-block" role="button" href="/create-team" style="padding-right: 2;padding-bottom: 2;padding-left: 2;padding-top: 2;height: 30.8px;width: 121.325px;"><i class="fas fa-plus fa-sm text-white-50"></i>&nbsp;Create Team</a><a class="btn btn-primary btn-sm d-none d-sm-inline-block" role="button" href="/join-team" style="margin: 13px;"><i class="fas fa-road fa-sm text-white-50"></i>&nbsp; Join Existing Team</a></div>
+{% else %}
+<div class="container-fluid" >
+   <div class="d-sm-flex justify-content-between align-items-center mb-4">
+      <h3 {% if user.darkMode %}  class="text-white mb-0" {% else %} class="text-dark mb-0" {% endif %}> Hello, {{ user.name.split()[0] }} </h3>
+   </div>
+   <div class="card-group"></div>
+   <div class="row">
+      <div class="col order-first">
+         <div class="card">
+            <div class="row align-items-center no-gutters" style="padding-top: 4px;">
+               <div class="col d-md-flex justify-content-md-center"><label class="col-form-label text-danger" style="font-size: 22px;margin-left: 11px;"><strong>{{team.name}}</strong><br></label></div>
+               <div class="col d-md-flex justify-content-md-center"><label class="form-label text-primary" style="font-size: 18px;margin-top: 6px; width: 150px;"><strong>Invitation code&nbsp;</strong></label><input readonly value="{{code}}"  class="d-md-flex align-items-md-center" type="text" style="text-align: center;  height: 26.6px;width: 119.4px;margin-top: 5px;margin-left: 6px;margin-bottom: 8px;margin-right: 6px;"></div>
+            </div>
+         </div>
+         <br>
+         <div class="card">
+            <div class="card-body" style="padding-top: 16px;">
+               <div class="row align-items-center no-gutters">
+                  <div class="col me-2">
+                     <div class="text-uppercase text-info fw-bold text-xs mb-1"><h6 style="color: darkred; font-weight: bold">progress</h6></div>
+                     <div class="row g-0 align-items-center">
+                        <div class="col-auto">
+                           <div class="text-dark fw-bold h5 mb-0 me-3"><span>{{ solved|length }} / {{ problems|length }} </span></div>
+                        </div>
+                        <div class="col">
+                           <div class="progress progress-sm">
+                              {% set my_progress = solved|length / problems|length * 100 %}
+                              <div class="progress-bar bg-info" aria-valuenow="{{ my_progress }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ my_progress }}%;"><span class="visually-hidden">{{ my_progress }}%</span></div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <br>
+         <div class="card" style="text-align: left;">
+            <div class="card-header py-3">
+               <h6 class=" fw-bold m-0 " style="color: darkslateblue; font-size: 20px; padding-left: 5px">Today's Problemset</h6>
+
+            </div>
+            <div class="card-body">
+               <ul class="list-group">
+                  {% for problem in problems %}
+                  <li class="list-group-item" {% if problem.id in solved %} style="background-color: springgreen;" {% else %} style="background-color: mintcream;" {% endif %} >
+                  <div class="row align-items-center no-gutters">
+                     <div class="col me-2"><span style="font-size: 20px;font-weight: bold;font-family: Nunito, sans-serif;">{{ problem.name }}</span></div>
+                     {% set url = 'https://codeforces.com/problemset/problem/' + problem.code %}
+                     <div class="col-auto">
+                        {% if problem.id not in solved and False %}
+                        <button class="btn btn-primary" type="button" style="text-align: center;padding-right: 11px;margin-right: 18px;height: 35px;width: 86.125px;" onclick="window.location.href='{{ url_for( "views.solved", num=problem.id,  type="new") }}';">Solved?</button>
+                        {% endif %}
+                        <button  class="btn btn-primary" type="button" target='_blank'  style="text-align: center;padding-right: 11px;margin-left: 0px;height: 35px;width: 105.125px;margin-right: 0px;background: rgb(162,62,239);color: var(--bs-body-bg);border-style: none;border-color: var(--bs-blue);" onclick= "window.open('{{url}}','_blank');return false;">Codeforces</button>
+                     </div>
+                  </div>
+                  </li>
+                  {% endfor %}
+               </ul>
+            </div>
+         </div>
+         <br>
+                  <div class="card" style="text-align: left;">
+            <div class="card-header d-flex justify-content-between align-items-center">
+               <h6 class="text-danger fw-bold m-0">Due Problems</h6>
+               <div class="dropdown no-arrow">
+                  <button class="btn btn-link btn-sm dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button"><i class="fas fa-ellipsis-v text-gray-400"></i></button>
+                  <div class="dropdown-menu shadow dropdown-menu-end animated--fade-in">
+                  </div>
+               </div>
+            </div>
+            <div class="card-body">
+               <ul class="list-group">
+                  {% for problem in dues %}
+                  <li class="list-group-item" {% if problem.id in solved %} style="background-color: springgreen;" {% else %} style="background-color: indianred;" {% endif %} >
+                  <div class="row align-items-center no-gutters">
+                     <div class="col me-2"><span style="font-size: 20px;font-weight: bold;font-family: Nunito, sans-serif; color: black;">{{ problem.name }}</span></div>
+                     {% set url = 'https://codeforces.com/problemset/problem/' + problem.code %}
+                     <div class="col-auto">
+                        {% if problem.id not in solved and False%}
+                        <button class="btn btn-primary" type="button" style="text-align: center;padding-right: 11px;margin-right: 18px;height: 35px;width: 86.125px;" onclick="window.location.href='{{ url_for("views.solved", num=problem.id,  type="due") }}';">Solved?</button>
+                        {% endif %}
+                        <button  class="btn btn-primary" type="button" target='_blank'  style="text-align: center;padding-right: 11px;margin-left: 0px;height: 35px;width: 105.125px;margin-right: 0px;background: rgb(62,100,20);color: var(--bs-body-bg);border-style: none;border-color: var(--bs-blue);" onclick= "window.open('{{url}}','_blank');return false;">Codeforces</button>
+                     </div>
+                  </div>
+                  </li>
+                  {% endfor %}
+               </ul>
+            </div>
+         </div>
+         <br>
+      </div>
+      <div class="col">
+         <div class="card">
+            <div class="card-header py-3">
+               <h6 class=" fw-bold m-0" style="color: darkslateblue; font-size: 20px; padding-left: 5px">Team mates progress</h6>
+            </div>
+            <div class="card-body">
+               {% for name, num, i, dues_num in team_mates %}
+               {% set m = team_mates[i] %}
+               <h4 class="small fw-bold" style="color:{{ colors[i] }}">{{ name }}
+                  <span class="float-end" {% if dues_num == 0 %} style="color: forestgreen; white-space:pre;" {% else %}  style="color: red;" {% endif %}> {{  dues_num }}</span>
+                  <span class="float-end" style="color:darkslategray"> dues </span>
+               </h4>
+                  <div>
+                     <h4 class="small fw-bold" style="color:{{ colors[i] }}"><span class="float-end" style="color: black; padding-left: 20px">{{ num }} / {{ problems|length }}</span></h4>
+                  </div>
+
+
+               <div class="progress progress mb-4">
+                  <div class="progress-bar bg-gradient-primary"  aria-valuenow="{{num / problems|length * 100 }}" aria-valuemin="0" aria-valuemax="100" style=" background: {{ colors[i] }}; width: {{ num / problems|length * 100 }}%;">
+                     <span class="visually-hidden">{{ num / problems|length }}%</span>
+                  </div>
+               </div>
+               {% endfor %}
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+{% endif %}
+{% endblock %}

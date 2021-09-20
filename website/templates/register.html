@@ -1,0 +1,42 @@
+{% extends "index.html" %} {% block title %}Home{% endblock %}
+{% block buttons %}
+<li class="nav-item"><a class="nav-link active d-md-flex align-items-md-start" id="login" href="/login"><i class="fas fa-user" style="margin-top: 2px;"></i><span>&nbsp; Sign in</span></a></li>
+{% endblock %}
+{% block content %}
+<div style="padding: 49px;">
+   <form method="POST">
+      <h3 style="color: black; "  align="center">Create Account</h3>
+      <br>
+      <center>
+         <div class="form-group">
+            <label style="color: black;"  form="name">Email Address</label>
+            <input type="email" type='email' value="{{email}}" style=" color: #2f3037; width: 400px;" class="form-control" id="email" name="email" placeholder="Enter email">
+         </div>
+         <br>
+         <div class="form-group">
+            <label style="color: black;"  form="name">Name</label>
+            <input type="name" type='text' value="{{name}}" style=" color: #2f3037; width: 400px;" class="form-control" id="name" name="name" placeholder="Enter your name">
+         </div>
+         <br>
+         <div class="form-group">
+            <label style="color: black;"  form="name">Codeforces handle</label>
+            <input type="name" type='text' value="{{handle}}" style=" color: #2f3037; width: 400px;" class="form-control" id="handle" name="handle" placeholder="Enter your Codeforces handle">
+         </div>
+         <br>
+         <div class="form-group">
+            <label style="color: black;"  form="name">Password</label>
+            <input type="password" type='password1' style="color: #2f3037; width: 400px;" class="form-control" id="password1" name="password1" placeholder="Enter password">
+         </div>
+         <br>
+         <div class="form-group">
+            <label style="color: black;"  form="name">Password (Confirm)</label>
+            <input type="password" type='password' style="color: #2f3037; width: 400px;" class="form-control" id="password2" name="password2" placeholder="Confirm password">
+         </div>
+         <br>
+         <br>
+         <button type="submit" class="btn btn-primary">Register</button>
+      </center>
+   </form>
+</div>
+<br> <br>
+{% endblock %}

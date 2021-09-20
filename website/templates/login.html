@@ -1,0 +1,28 @@
+{% extends "index.html" %} {% block title %}Home{% endblock %}
+{% block buttons %}
+   <li class="nav-item"><a class="nav-link active d-md-flex align-items-md-start" id="login" href="/signup"><i class="fas fa-user" style="margin-top: 2px;"></i><span>&nbsp; Register</span></a></li>
+{% endblock %}
+{% block content %}
+<div style="padding: 49px;">
+   <form method="POST">
+      <h3 style="color: black; "  align="center">Sign in</h3>
+      <br>
+      <br>
+      <center>
+         <div class="form-group">
+            <label style="color: black;"  form="name">Email Address</label>
+            <input type="email" type='email' style="color: #2f3037; width: 400px;" class="form-control" id="email" name="email" placeholder="Enter email">
+         </div>
+         <br>
+         <div class="form-group">
+            <label style="color: black;"  form="name">Password</label>
+            <input type="password" type='password' style="color: #2f3037; width: 400px;" class="form-control" id="password" name="password" placeholder="Enter password">
+         </div>
+         <br>
+         <br>
+         <button type="submit" class="btn btn-primary">Sign in</button>
+      </center>
+   </form>
+</div>
+<br> <br> <br> <br>
+{% endblock %}
