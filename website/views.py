@@ -19,7 +19,7 @@ def home():
 
     team = get_team()
     user = current_user
-    # update_user_and_mates(team)
+
     if not team:
         return render_template("home.html", user=user, team=None, problemset=[], solved=[],
                                code='', team_mates=[], colors=[])
@@ -47,6 +47,7 @@ def home():
     # thread = Thread(target=update_user_and_mates, args=(team,))
     # thread.daemon = True
     # thread.start()
+    print(sol)
 
     return render_template("home.html", user=user, team=team, problems=problems, solved=sol,
                            code=generate_invitation_code(team.id), team_mates=team_mates, colors=colors, dues=dues)
@@ -221,9 +222,10 @@ def get_daily_goal():
 
 
 def get_today_problems():
+    check_my_set()
     set_id = get_team().set_id
     my_set = find_set_by_id(set_id)
-    start = get_team().index
+    start = get_team().index - 1
     end = min(start + get_daily_goal(), my_set.count + 1)
     return [find_problem_by_id(i) for i in my_set.problems_ids[start:end]]
 
@@ -234,7 +236,7 @@ def get_today_problems_names():
 
 def get_today_solved_problems(user: User):
     today = get_today_problems()
-    solved_today = [x for x in today if x in user.solved_ids]
+    solved_today = [x for x in today if x.id in user.solved_ids]
     return solved_today
 
 
@@ -263,12 +265,12 @@ def new_day(team):
         if is_someone_solved_today(team):
             set_dues(team)
             my_set = get_set()
-            if team.index + team.daily_goal <= my_set.count:
-                team.index += team.daily_goal
-            else:
+            team.index += team.daily_goal
+
+            if team.index > my_set.count:
                 team.index = 1
                 team.set_id += 1
-
+            check_my_set()
             team.solved_today = False
             team.last_updated = get_date_cairo()
             team.save()
@@ -278,7 +280,7 @@ def set_dues(team):
     members = get_team_members(team.id)
     for i in members:
         for j in get_today_unsolved_problems(i):
-            i.dues.append(j)
+            i.due_ids.append(j.id)
         i.save()
 
 
@@ -326,18 +328,31 @@ def update_all_teams():
     for team in teams:
         update_user_and_mates(team)
 
-# @views.route('/solved')
-# @login_required
-# def solved():
-#     problem_id = int(request.args.get('num'))
-#     new = request.args.get('type') == 'new'
-#     get_current_user().set_solved(problem_id)
-#
-#     if not new:
-#         for i in list(Problem.query.filter(Problem.id == problemIndex).all()):
-#             get_current_user().dues.remove(i)
-#     else:
-#         get_team().solvedToday = True
-#
-#     db.session.commit()
-#     return redirect(url_for('views.home'))
+
+def check_my_set():
+    if not get_set() or not get_set().count:
+        team = get_team()
+        team.set_id = 1
+        team.index = 1
+        team.save()
+
+
+@views.route('/solved')
+@login_required
+def solved():
+    problem_id = int(request.args.get('id'))
+    new = request.args.get('type') == 'new'
+    team = get_team()
+    user = get_current_user()
+
+    user.set_solved(problem_id)
+
+    if not new:
+        user.due_ids.remove(problem_id)
+    else:
+        team.solved_today = True
+
+    team.save()
+    user.save()
+
+    return redirect(url_for('views.home'))
