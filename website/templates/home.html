@@ -2,9 +2,9 @@
 {% block dark %}
 
 <form method="POST">
-   <div class="form-check form-switch" style="margin-top: 5px;font-size: 18px; margin-right: 30px;">
-  <input class="form-check-input" onclick="this.form.submit()" type="checkbox" id="switch" {% if user.settings['darkMode'] %} checked {% endif %}>
-  <label class="form-check-label" for="switch">Dark mode</label>
+   <div class="form-check form-switch nav-link active d-md-flex align-items-md-start" >
+  <input class="form-check-input nav-link active d-md-flex align-items-md-start" style="margin-top: 3px" onclick="this.form.submit()" type="checkbox" id="switch" {% if user.settings['darkMode'] %} checked {% endif %}>
+  <label class="form-check-label d-lg-flex align-items-lg-start" for="switch" STYLE="padding-left: 6px">Dark mode</label>
    </div>
 </form>
 {% endblock %}

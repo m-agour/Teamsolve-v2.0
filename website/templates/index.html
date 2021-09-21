@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html style="  position: relative; min-height: 100%;" lang="en">
 
 <head>
     <meta charset="utf-8">
@@ -17,7 +17,7 @@
 
 </head>
 
-<body id="page-top" {% if user %}{% if user.settings %}{% if user.settings['darkMode'] %}  style="background: #17171b" {% else %} style="background: #d7dceb" {% endif %}{% endif %}{% endif %}>
+<body id="page-top" {% if user %}{% if user.settings %}{% if user.settings['darkMode'] %}  style="background: #17171b; padding-bottom: 140px" {% else %} style="background: #d7dceb; padding-bottom: 140px" {% endif %}{% endif %}{% endif %}>
     <div id="wrapper">
         <div class="visible"></div>
         <div class="d-flex flex-column" id="content-wrapper"  {% if user %}{% if user.settings %}{% if user.settings['darkMode'] %}  style="background: #17171b" {% else %} style="background: #d7dceb" {% endif %}{% endif %}{% endif %}>
@@ -30,12 +30,11 @@
                         <div class="collapse navbar-collapse d-md-flex d-lg-flex" style="     justify-content: right!important;" id="navcol-2">
                             <ul class="navbar-nav d-md-flex">
 
-                                {% if user.id %}
-                                <ul class="navbar-nav d-md-flex justify-content-md-center">
-                                    <li class="nav-item">
-                                        {% block dark %} {% endblock %}
-                                    </li>
-                                </ul>
+                            {% if user.id %}
+                                <li class="nav-item"  class="nav-link active d-md-flex align-items-md-start" style="margin-right: 17px;">
+                                    {% block dark %} {% endblock %}
+                                </li>
+
 
                                 <li class="nav-item"><a class="nav-link active d-md-flex align-items-md-start" href="/" style="margin-right: 17px;"><i class="fas fa-tachometer-alt" style="margin-top: 3px;"></i><span>&nbsp;Dashboard</span></a></li>
                                     {% if user.team_id %}
@@ -43,17 +42,17 @@
                                             <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                             <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z"></path>
                                             <circle cx="12" cy="12" r="3"></circle>
-                                        </svg><span class="d-lg-flex align-items-lg-start">&nbsp;Team Settings</span></a></li>
+                                        </svg><span class="d-lg-flex align-items-lg-start">&nbsp;Settings</span></a></li>
                                     {% endif %}
-                            </ul>
-                                <ul class="navbar-nav d-md-flex justify-content-md-center">
+
                                     <li class="nav-item"><a class="nav-link active d-md-flex align-items-md-start" id="logout" href="/logout"><i class="fas fa-user" style="margin-top: 2px;"></i><span>&nbsp;Logout</span></a></li>
-                                </ul>
+
                                 {% else %}
                                 <div class="container" >
                                         {% block buttons %} {% endblock %}
                                 </div>
                                 {% endif %}
+                                               </ul>
                         </div>
                     </div>
                 </nav>
@@ -83,5 +82,29 @@
     <script src="static/js/bs-init.js"></script>
     <script src="static/js/theme.js"></script>
 </body>
-
+<footer class="text-center text-white bottom" style="background-color: #f1f1f1; overflow:hidden; max-height: 60px; bottom: 0; position: absolute;  width: 100%;">
+  <!-- Grid container -->
+  <div class="container pt-2">
+    <section class="mb-4">
+      <!-- Linkedin -->
+      <a
+        target="_blank"
+        class="btn btn-primary btn-floating m-1"
+        style="background-color: #0082ca;"
+        href="https://www.linkedin.com/in/mohammed-nagy"
+        role="button"
+        ><i class="fab fa-linkedin-in"></i
+      ></a>
+      <!-- Github -->
+      <a
+        target="_blank"
+        class="btn btn-primary btn-floating m-1"
+        style="background-color: #333333;"
+        href="https://github.com/m-agour"
+        role="button"
+        ><i class="fab fa-github"></i
+      ></a>
+    </section>
+  </div>
+</footer>
 </html>
