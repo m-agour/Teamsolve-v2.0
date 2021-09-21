@@ -2,8 +2,8 @@
 {% block dark %}
 
 <form method="POST">
-   <div class="form-check form-switch nav-link active d-md-flex align-items-md-start" >
-  <input class="form-check-input nav-link active d-md-flex align-items-md-start" style="margin-top: 3px" onclick="this.form.submit()" type="checkbox" id="switch" {% if user.settings['darkMode'] %} checked {% endif %}>
+   <div class="form-check form-switch nav-link active d-flex align-items-md-start" >
+  <input class="form-check-input nav-link active d-flex align-items-md-start" style="margin-top: 3px" onclick="this.form.submit()" type="checkbox" id="switch" {% if user.settings['darkMode'] %} checked {% endif %}>
   <label class="form-check-label d-lg-flex align-items-lg-start" for="switch" STYLE="padding-left: 6px">Dark mode</label>
    </div>
 </form>
@@ -23,8 +23,8 @@
       <div class="col order-first">
          <div class="card">
             <div class="row align-items-center no-gutters" style="padding-top: 4px;">
-               <div class="col d-md-flex justify-content-md-center"><label class="col-form-label text-danger" style="font-size: 22px;margin-left: 11px;"><strong>{{team.name}}</strong><br></label></div>
-               <div class="col d-md-flex justify-content-md-center"><label class="form-label text-primary" style="font-size: 18px;margin-top: 6px; width: 150px;"><strong>Invitation code&nbsp;</strong></label><input readonly value="{{code}}"  class="d-md-flex align-items-md-center" type="text" style="text-align: center;  height: 26.6px;width: 119.4px;margin-top: 5px;margin-left: 6px;margin-bottom: 8px;margin-right: 6px;"></div>
+               <div class="col d-flex justify-content-md-center"><label class="col-form-label text-danger" style="font-size: 22px;margin-left: 11px;"><strong>{{team.name}}</strong><br></label></div>
+               <div class="col d-flex justify-content-md-center"><label class="form-label text-primary" style="font-size: 18px;margin-top: 6px; width: 150px;"><strong>Invitation code&nbsp;</strong></label><input readonly value="{{code}}"  class="d-flex align-items-md-center" type="text" style="text-align: center;  height: 26.6px;width: 119.4px;margin-top: 5px;margin-left: 6px;margin-bottom: 8px;margin-right: 6px;"></div>
             </div>
          </div>
          <br>
