@@ -2,8 +2,8 @@
 {% block dark %}
 
 <form method="POST">
-   <div class="form-check form-switch nav-link active d-flex align-items-md-start" >
-  <input class="form-check-input nav-link active d-flex align-items-md-start" style="margin-top: 3px" onclick="this.form.submit()" type="checkbox" id="switch" {% if user.settings['darkMode'] %} checked {% endif %}>
+   <div class="form-check form-switch nav-link active d-md-flex align-items-md-start" >
+  <input class="form-check-input nav-link active d-md-flex align-items-md-start" style="margin-top: 3px" onclick="this.form.submit()" type="checkbox" id="switch" {% if user.settings['darkMode'] %} checked {% endif %}>
   <label class="form-check-label d-lg-flex align-items-lg-start" for="switch" STYLE="padding-left: 6px">Dark mode</label>
    </div>
 </form>
@@ -14,7 +14,7 @@
 {% if not user.team_id %}
 <div class="col text-center" style="margin: 1px;"><a class="btn btn-primary btn-sm d-none d-sm-inline-block" role="button" href="/create-team" style="padding-right: 2;padding-bottom: 2;padding-left: 2;padding-top: 2;height: 30.8px;width: 121.325px;"><i class="fas fa-plus fa-sm text-white-50"></i>&nbsp;Create Team</a><a class="btn btn-primary btn-sm d-none d-sm-inline-block" role="button" href="/join-team" style="margin: 13px;"><i class="fas fa-road fa-sm text-white-50"></i>&nbsp; Join Existing Team</a></div>
 {% else %}
-<div class="container-fluid" style="padding-left: 0px; padding-right: 0px" >
+<div class="container-fluid" >
    <div class="d-sm-flex justify-content-between align-items-center mb-4">
       <h3 {% if user.settings['darkMode']  %}  class="text-white mb-0" {% else %} class="text-dark mb-0" {% endif %}> Hello, {{ user.name.split()[0] }} </h3>
    </div>
@@ -23,8 +23,8 @@
       <div class="col order-first">
          <div class="card">
             <div class="row align-items-center no-gutters" style="padding-top: 4px;">
-               <div class="col d-flex justify-content-md-center"><label class="col-form-label text-danger" style="font-size: 22px;margin-left: 11px;"><strong>{{team.name}}</strong><br></label></div>
-               <div class="col d-flex justify-content-md-center"><label class="form-label text-primary" style="font-size: 18px;margin-top: 6px; width: 150px;"><strong>Invitation code&nbsp;</strong></label><input readonly value="{{code}}"  class="d-flex align-items-md-center" type="text" style="text-align: center;  height: 26.6px;width: 119.4px;margin-top: 5px;margin-left: 6px;margin-bottom: 8px;margin-right: 6px;"></div>
+               <div class="col d-md-flex justify-content-md-center"><label class="col-form-label text-danger" style="font-size: 22px;margin-left: 11px;"><strong>{{team.name}}</strong><br></label></div>
+               <div class="col d-md-flex justify-content-md-center"><label class="form-label text-primary" style="font-size: 18px;margin-top: 6px; width: 150px;"><strong>Invitation code&nbsp;</strong></label><input readonly value="{{code}}"  class="d-md-flex align-items-md-center" type="text" style="text-align: center;  height: 26.6px;width: 119.4px;margin-top: 5px;margin-left: 6px;margin-bottom: 8px;margin-right: 6px;"></div>
             </div>
          </div>
          <br>
