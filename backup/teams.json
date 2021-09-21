@@ -1,0 +1,11 @@
+[{
+  "_id": 1,
+  "name": "Error Squad",
+  "daily_goal": 3,
+  "index": 19,
+  "last_updated": {
+    "$date": "2021-09-20T00:00:00Z"
+  },
+  "solved_today": false,
+  "set_id": 2
+}]

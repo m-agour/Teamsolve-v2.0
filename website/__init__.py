@@ -37,8 +37,11 @@ app.secret_key = 'Hello darkness my old friend'
 # except :
 #     print('Error, cannot connect to mongo database!')
 
+
+
 mongoengine.register_connection(alias='core', name='teamsolve')
-mongoengine.connect('teamsolve', alias='default')
+# mongoengine.connect('teamsolve', alias='default')
+connect( host="mongodb+srv://dodicono:FArs2013@teamsolve.df6hd.mongodb.net/teamsolve")
 
 
 login_manager = LoginManager()

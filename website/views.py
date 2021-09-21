@@ -25,17 +25,17 @@ def home():
         return render_template("home.html", user=user, team=None, problemset=[], solved=[],
                                code='', team_mates=[], colors=[])
 
-    update_user_and_mates(team)
-    new_day(team)
+    # update_user_and_mates(team)
+    # new_day(team)
     check_set(team)
 
-    # thread1 = Thread(target=update_user_and_mates, args=(team,))
-    # thread2 = Thread(target=new_day, args=(team,))
-    #
-    # thread1.daemon = True
-    # thread1.start()
-    # thread2.daemon = True
-    # thread2.start()
+    thread1 = Thread(target=update_user_and_mates, args=(team,))
+    thread2 = Thread(target=new_day, args=(team,))
+
+    thread1.daemon = True
+    thread1.start()
+    thread2.daemon = True
+    thread2.start()
 
     sol = get_today_solved_problems_ids(get_current_user())
     problems = get_today_problems(team.id)
@@ -357,7 +357,7 @@ def update_user_and_mates(team):
             changes = True
             team.save()
     if changes:
-        return redirect(url_for('views.home'))
+        redirect(url_for('views.home'))
 
 
 def update_all_teams():
@@ -392,4 +392,3 @@ def solved():
     team.save()
     user.save()
 
-    return redirect(url_for('views.home'))
