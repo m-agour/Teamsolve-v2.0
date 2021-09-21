@@ -372,6 +372,9 @@ def check_set(team):
         team.set_id = 1
         team.index = 1
         team.save()
+    if not my_set or not my_set.count:
+        team.set_id += 1
+        team.save()
 
 
 @views.route('/solved')
