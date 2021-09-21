@@ -31,21 +31,21 @@
                             <ul class="navbar-nav d-flex">
 
                             {% if user.id %}
-                                <li class="nav-item"  class="nav-link active d-flex align-items-md-start" style="margin-right: 17px;">
+                                <li class="nav-item"  class="nav-link active d-flex align-items-end" style="margin-right: 17px;">
                                     {% block dark %} {% endblock %}
                                 </li>
 
 
-                                <li class="nav-item"><a class="nav-link active d-flex align-items-md-start" href="/" style="margin-right: 17px;"><i class="fas fa-tachometer-alt" style="margin-top: 3px;"></i><span>&nbsp;Dashboard</span></a></li>
+                                <li class="nav-item"><a class="nav-link active d-flex align-items-end" href="/" style="margin-right: 17px;"><i class="fas fa-tachometer-alt" style="margin-top: 3px;"></i><span>&nbsp;Dashboard</span></a></li>
                                     {% if user.team_id %}
-                                        <li class="nav-item"><a class="nav-link active d-flex align-items-md-start" href="/settings" style="margin-right: 17px;"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-settings d-lg-flex" style="margin-top: 3px;font-size: 18px;">
+                                        <li class="nav-item"><a class="nav-link active d-flex align-items-end" href="/settings" style="margin-right: 17px;"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-settings d-lg-flex" style="margin-top: 3px;font-size: 18px;">
                                             <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                             <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z"></path>
                                             <circle cx="12" cy="12" r="3"></circle>
-                                        </svg><span class="d-lg-flex align-items-lg-start">&nbsp;Settings</span></a></li>
+                                        </svg><span class="d-lg-flex align-items-end">&nbsp;Settings</span></a></li>
                                     {% endif %}
 
-                                    <li class="nav-item"><a class="nav-link active d-flex align-items-md-start" id="logout" href="/logout"><i class="fas fa-user" style="margin-top: 2px;"></i><span>&nbsp;Logout</span></a></li>
+                                    <li class="nav-item"><a class="nav-link active d-flex align-items-start" id="logout" href="/logout"><i class="fas fa-user" style="margin-top: 2px;"></i><span>&nbsp;Logout</span></a></li>
 
                                 {% else %}
                                 <div class="container" >
