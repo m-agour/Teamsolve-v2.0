@@ -334,32 +334,31 @@ def get_dues_list(user):
 def update_user_solved_problems(user):
     sol = False
     solved_on_codeforces = get_solved_problems(user.handle)
-
+    problems = get_today_problems(user.team_id)
     for code in solved_on_codeforces:
         problem = find_problem_by_code(code)
         if not problem:
             problem = Problem(name=code, code=code, judge='Codeforces')
             problem.save()
+
+        if problem.id in user.due_ids:
+            user.due_ids.remove(problem.id)
+
         if problem.id not in user.solved_ids:
-            if problem in user.due_ids:
-                user.due_ids.remove(problem.id)
-            else:
-                sol = True
             user.solved_ids.append(problem.id)
+            if problem in problems:
+                sol = True
+
         user.save()
     return sol
 
 
 def update_user_and_mates(team):
-    changes = False
     lst = get_team_members(team.id)
     for i in lst:
         if update_user_solved_problems(i):
             team.solved_today = True
-            changes = True
             team.save()
-    if changes:
-        redirect(url_for('views.home'))
 
 
 def update_all_teams():
