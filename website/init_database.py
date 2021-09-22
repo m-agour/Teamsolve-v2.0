@@ -67,4 +67,5 @@ def load_sets():
 
             new_set.problems_ids.append(problem.id)
             new_set.count += 1
-        new_set.save()
+        if new_set.count > 0:
+            new_set.save()
