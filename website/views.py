@@ -267,6 +267,7 @@ def get_today_problems_names(team_id):
 
 def get_today_solved_problems(user: User):
     today = get_today_problems(user.team_id)
+
     solved_today = [x for x in today if x.id in user.solved_ids]
     return solved_today
 
