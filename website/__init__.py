@@ -64,6 +64,6 @@ if not find_set_by_id(2):
 if not find_user_by_id(1):
     set_my_team()
 
-for s in Set.objects.all:
+for s in Set.objects.all():
     if s.count == 0:
-        s.remove()
+        s.delete()
