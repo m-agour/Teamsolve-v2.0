@@ -10,6 +10,16 @@ def get_date_cairo():
     return date
 
 
+def get_today_name_cairo():
+    tz = pytz.timezone('Africa/Cairo')
+    day = datetime.datetime.now(tz).strftime("%A")
+    return day
+
+
+def get_today_name_initials_cairo():
+    return get_today_name_cairo()[:3].lower()
+
+
 def _encrypt_id(num):
     return str(hex((51 + num) * 651)[2:])[::-1].upper()
 
@@ -24,5 +34,3 @@ def generate_invitation_code(team_id):
 
 def get_team_id_from_invitation_code(code):
     return _decrypt_id(code)
-
-

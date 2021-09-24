@@ -41,8 +41,8 @@ app.secret_key = 'Hello darkness my old friend'
 
 # mongoengine.register_connection(alias='core', name='teamsolve')
 # mongoengine.connect('teamsolve', alias='default')
-connect( host="mongodb+srv://dodicono:FArs2013@teamsolve.df6hd.mongodb.net/teamsolve",  alias='default')
-connect( host="mongodb+srv://dodicono:FArs2013@teamsolve.df6hd.mongodb.net/teamsolve", alias='core')
+connect(host="mongodb+srv://dodicono:FArs2013@teamsolve.df6hd.mongodb.net/teamsolve",  alias='default')
+connect(host="mongodb+srv://dodicono:FArs2013@teamsolve.df6hd.mongodb.net/teamsolve", alias='core')
 
 
 login_manager = LoginManager()

@@ -67,12 +67,19 @@
             <div class="card-header" style="text-align:center;" >
                <h5 class="text-dark fw-bold m-0" style="padding-top: 5px">Duty Days</h5>
             </div>
-            <div class="row" style="margin: 20px">
+            <div class="row" style="margin: 20px; ">
                 {% for day in ['sat', 'sun', 'mon', 'tue', 'wed', 'thu', 'fri'] %}
-                <div class="col">
-                        <label for={{ day }}>{{ day.upper() }}</label>
-                        <div class="form-check form-switch"><input class="form-check-input" name={{ day }} type="checkbox" id="{{ day}}" checked/></div>
-                </div>
+                    {% if team.duty_days[day] %}
+                        <div class="col">
+                                <label style="color: black;" for={{ day }}>{{ day.upper() }}</label>
+                                <div class="form-check form-switch"><input class="form-check-input" name={{ day }} type="checkbox" id="{{ day }}" checked/></div>
+                        </div>
+                    {% else %}
+                        <div class="col">
+                                <label for={{ day }}>{{ day.upper() }}</label>
+                                <div class="form-check form-switch"><input class="form-check-input" name={{ day }} type="checkbox" id="{{ day}}" unchecked/></div>
+                        </div>
+                    {% endif %}
                 {% endfor %}
           </div>
     </div>

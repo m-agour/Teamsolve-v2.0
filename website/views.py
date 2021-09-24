@@ -29,13 +29,13 @@ def home():
     new_day(team)
     check_set(team)
 
-    # thread1 = Thread(target=update_user_and_mates, args=(team,))
-    # thread2 = Thread(target=new_day, args=(team,))
-    #
-    # thread1.daemon = True
-    # thread1.start()
-    # thread2.daemon = True
-    # thread2.start()
+    thread1 = Thread(target=update_user_and_mates, args=(team,))
+    thread2 = Thread(target=new_day, args=(team,))
+
+    thread1.daemon = True
+    thread1.start()
+    thread2.daemon = True
+    thread2.start()
 
     sol = get_today_solved_problems_ids(get_current_user())
     problems = get_today_problems(team.id)
@@ -130,9 +130,9 @@ def settings():
                     team.set_id = set_id
                     team.index = 1
 
+                req_keys = request.form.keys()
                 for day in team.duty_days.keys():
-                    team[day] = request.form[day] == 'on'
-
+                    team.duty_days[day] = day in req_keys
                 team.save()
 
                 if user.name != user_name:
@@ -298,10 +298,9 @@ def get_team_mates(user: User):
 
 def new_day(team):
     if is_new_day(team):
-        if is_someone_solved_today(team):
+        if is_someone_solved_today(team) and team.duty_days[get_today_name_initials_cairo()]:
             set_dues(team)
             team.index += team.daily_goal
-
             if team.index > get_set(team.set_id).count:
                 team.index = 1
                 team.set_id += 1
