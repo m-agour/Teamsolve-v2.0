@@ -18,7 +18,7 @@
          <div class="col order-first" >
             <div class="card"  style="background: white">
                 <div class="card-header" style="text-align:center;" >
-               <h4 class="text-dark fw-bold m-0" >Account</h4>
+               <h5 class="text-dark fw-bold m-0" style="padding-top: 5px">Account</h5>
                </div>
             <center>
                <div class="form-group" style="margin-top: 10px; margin-left: 20px; margin-right:20px;">
@@ -40,7 +40,7 @@
             <br>
             <div class="card"  style="background: white">
                 <div class="card-header" style="text-align:center;" >
-               <h4 class="text-dark fw-bold m-0" >Team</h4>
+               <h5 class="text-dark fw-bold m-0" style="padding-top: 5px">Team</h5>
                </div>
             <center>
                <div class="form-group" style="margin-top: 30px; margin-left: 20px; margin-right:20px;">
@@ -65,43 +65,21 @@
       <div class="col order-second" >
           <div class="card" >
             <div class="card-header" style="text-align:center;" >
-               <h4 class="text-dark fw-bold m-0" >Solving days</h4>
+               <h5 class="text-dark fw-bold m-0" style="padding-top: 5px">Duty Days</h5>
             </div>
             <div class="row" style="margin: 20px">
+                {% for day in ['sat', 'sun', 'mon', 'tue', 'wed', 'thu', 'fri'] %}
                 <div class="col">
-                        <label for="sat">Sat</label>
-                        <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="sat" /></div>
+                        <label for={{ day }}>{{ day.upper() }}</label>
+                        <div class="form-check form-switch"><input class="form-check-input" name={{ day }} type="checkbox" id="{{ day}}" checked/></div>
                 </div>
-                <div class="col">
-                        <label for="sun">Sun</label>
-                        <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="sun" /></div>
-                </div>
-                <div class="col">
-                        <label for="mon">Mon</label>
-                        <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="mon" /></div>
-                </div>
-                <div class="col">
-                        <label for="tue">Tue</label>
-                        <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="tue" /></div>
-                </div>
-                <div class="col">
-                        <label for="wed">Wed</label>
-                        <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="wed" /></div>
-                </div>
-                <div class="col">
-                        <label for="thu">Thu</label>
-                        <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="thu" /></div>
-                </div>
-                <div class="col">
-                        <label for="fri">Fri</label>
-                        <div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="fri" /></div>
-                </div>
+                {% endfor %}
           </div>
     </div>
       <br>
             <div class="card" >
                <div class="card-header" style="text-align:center;" >
-               <h4 class="text-dark fw-bold m-0" >Ladders & Categories</h4>
+               <h5 class="text-dark fw-bold m-0" style="padding-top: 5px">Ladders & Categories</h5>
                </div>
                <br>
                <ul style=" max-height: 655px;margin-bottom: 10px;overflow-y: auto;-webkit-overflow-scrolling: touch; margin-right:20px">

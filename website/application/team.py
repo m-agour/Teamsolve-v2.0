@@ -1,4 +1,5 @@
 import mongoengine
+from mongoengine import BooleanField as Bool
 from website.additional import *
 
 
@@ -11,6 +12,9 @@ class Team(mongoengine.Document):
     solved_today = mongoengine.BooleanField(default=False)
     set_id = mongoengine.IntField()
     no_vacation = mongoengine.IntField()
+    duty_days = mongoengine.DictField(sat=Bool(default=True), sun=Bool(default=True), mon=Bool(default=True),
+                                      tue=Bool(default=True), wed=Bool(default=True), thu=Bool(default=True),
+                                      fri=Bool(default=True))
     meta = {
         'db_alias': 'core',
         'collection': 'teams'

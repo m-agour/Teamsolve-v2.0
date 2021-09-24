@@ -129,6 +129,10 @@ def settings():
                 if set_id != team.set_id:
                     team.set_id = set_id
                     team.index = 1
+
+                for day in team.duty_days.keys():
+                    team[day] = request.form[day] == 'on'
+
                 team.save()
 
                 if user.name != user_name:
@@ -293,7 +297,6 @@ def get_team_mates(user: User):
 
 
 def new_day(team):
-
     if is_new_day(team):
         if is_someone_solved_today(team):
             set_dues(team)
@@ -304,11 +307,8 @@ def new_day(team):
                 team.set_id += 1
             check_set(team)
             team.solved_today = False
-            team.last_updated = get_date_cairo()
-            team.save()
-
-            with app.app_context():
-                return redirect(url_for('views.home'))
+        team.last_updated = get_date_cairo()
+        team.save()
 
 
 def set_dues(team):
