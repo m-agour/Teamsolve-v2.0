@@ -11,7 +11,6 @@ class Team(mongoengine.Document):
     last_updated = mongoengine.DateField(default=get_date_cairo())
     solved_today = mongoengine.BooleanField(default=False)
     set_id = mongoengine.IntField()
-    no_vacation = mongoengine.IntField()
     duty_days = mongoengine.DictField(default={x: True for x in ['sat', 'sun', 'mon', 'tue', 'wed', 'thu', 'fri']})
     meta = {
         'db_alias': 'core',

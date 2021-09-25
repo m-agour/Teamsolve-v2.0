@@ -192,7 +192,7 @@ def createTeam():
             flash('Woo! take it easy champ, leave some for next month. (max is 50 per day)', category='error')
 
         else:
-            team = Team(name=name, daily_goal=number, members_ids=[current_user.id], set_id=0)
+            team = Team(name=name, daily_goal=number, set_id=1)
             team.save()
 
             user = get_current_user()
