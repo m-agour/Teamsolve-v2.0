@@ -3,7 +3,7 @@
 
 <form method="POST">
    <div class="form-check form-switch" style="margin-top: 5px;font-size: 18px; margin-right: 30px;">
-  <input class="form-check-input" onclick="this.form.submit()" type="checkbox" id="switch" {% if user.settings['darkMode'] %} checked {% endif %}>
+  <input class="form-check-input" onclick="this.form.submit()" type="checkbox" name='dark' id="dark" {% if user.settings['darkMode'] %} checked {% endif %}>
   <label class="form-check-label" for="switch">Dark mode</label>
    </div>
 </form>
@@ -70,14 +70,14 @@
             <div class="row" style="margin: 20px; ">
                 {% for day in ['sat', 'sun', 'mon', 'tue', 'wed', 'thu', 'fri'] %}
                     {% if team.duty_days[day] %}
-                        <div class="col">
-                                <label style="color: black;" for={{ day }}>{{ day.upper() }}</label>
-                                <div class="form-check form-switch"><input class="form-check-input" name={{ day }} type="checkbox" id="{{ day }}" checked/></div>
+                        <div class="col" >
+                                <div><label style="color: black;" for={{ day }}>{{ day.upper() }}</label></div>
+                                <div class="form-check  jp-switch"><input style="position:relative; left:7px;" class="form-check-input" name={{ day }} type="checkbox" id="{{ day }}" checked/></div>
                         </div>
                     {% else %}
                         <div class="col">
                                 <label for={{ day }}>{{ day.upper() }}</label>
-                                <div class="form-check form-switch"><input class="form-check-input" name={{ day }} type="checkbox" id="{{ day}}" unchecked/></div>
+                                <div class="form-check  jp-switch"><input class="form-check-input" name={{ day }} type="checkbox" id="{{ day}}" unchecked/></div>
                         </div>
                     {% endif %}
                 {% endfor %}

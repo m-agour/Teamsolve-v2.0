@@ -156,6 +156,9 @@ def settings():
             flash('You left the team!', category='success')
             return redirect(url_for('views.home'))
 
+        else:
+            current_user.toggle_dark_mode()
+
     return render_template("settings.html", user=get_current_user(), team=get_current_team(), sets=sets,
                            set_count=set_problems_count)
 
