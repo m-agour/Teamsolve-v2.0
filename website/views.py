@@ -343,15 +343,16 @@ def update_user_solved_problems(user):
             problem = Problem(name=code, code=code, judge='Codeforces')
             problem.save()
 
-        if problem.id in user.due_ids:
-            user.due_ids.remove(problem.id)
-
         if problem.id not in user.solved_ids:
             user.solved_ids.append(problem.id)
+            if problem.id in user.due_ids:
+                user.due_ids.remove(problem.id)
             if problem in problems:
                 sol = True
+        else:
+            break
 
-        user.save()
+    user.save()
     return sol
 
 

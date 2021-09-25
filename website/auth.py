@@ -2,7 +2,7 @@ import datetime
 import pytz
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from .application.user import *
-from .application.team import *
+from .application.problem import *
 
 from .codeforces.codeforces_api import get_solved_problems
 from flask_login import login_user, login_required, logout_user, current_user, user_logged_out, AnonymousUserMixin
@@ -58,7 +58,7 @@ def sign_up():
         pass2 = request.form.get('password2')
 
         user = find_user_by_email(email)
-        # solved_problems = get_solved_problems(handle)
+        solved_problems = get_solved_problems(handle)
 
         if user:
             flash('Email already exists.', category='error')
@@ -70,21 +70,22 @@ def sign_up():
             flash('Passwords don\'t match.', category='error')
         elif len(pass1) < 7:
             flash('Password must be at least 7 characters.', category='error')
-        #
-        # elif isinstance(solved_problems, bool):
-        #     flash('Please enter a valid codeforces handle.', category='error')
+
+        elif isinstance(solved_problems, tuple):
+            flash('Please enter a valid codeforces handle.', category='error')
 
         else:
             new_user = register_user(name, email, pass1, handle)
             new_user.save()
             login_user(new_user, remember=True)
 
-            # for i in solved_problems:
-            #     p = Problem.query.filter(Problem.code == i).first()
-            #     if p:
-            #         current_user.solutions.append(p)
-            #
-            # db.session.commit()
+            for code in solved_problems:
+                problem = find_problem_by_code(code)
+                if not problem:
+                    problem = Problem(name=code, code=code, judge='Codeforces')
+                    problem.save()
+                new_user.solved_ids.append(problem.id)
+            new_user.save()
             flash('Account created!', category='success')
             return redirect(url_for('views.home'))
 

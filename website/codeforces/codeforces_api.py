@@ -59,7 +59,7 @@ def get_solved_problems(handle):
                 solved.append(f"{p['contestId']}/{p['index']}")
         return solved
     except:
-        return solved
+        return ()
 
 
 def generate_ordered_problems_id_name_solved():
