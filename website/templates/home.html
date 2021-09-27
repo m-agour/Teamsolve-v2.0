@@ -9,13 +9,13 @@
 {% endblock %}
 {% block content %}
 <body id="page_top"{% if user %}{% if user.settings %}{% if user.settings['darkMode'] %}  style="background: #17171b;  padding-bottom: 140px" {% else %} style="background: #d7dceb;  padding-bottom: 140px" {% endif %}{% endif %}{% endif %} >
-      <input  id='refresh' style="margin-top: 3px">
 
 <script type="text/javascript">
       $(document).ready(function(){
           let socket = io.connect();
           socket.on('connect', function(){
               socket.send('connected!');
+              getReqs('{{user.handle }}').then(data => handle_solutions(data));
           });
 
           socket.on('message', function(msg){
@@ -73,9 +73,6 @@
 
           {# send members handles to server #}
 
-          $("#refresh").on("click", function() {
-              getReqs('{{user.handle }}').then(data => handle_solutions(data));
-          });
           $("#dark").on("click", function() {
               if (document.getElementById("dark").checked){
                 document.getElementById("page_top").style.background = "#17171b";
