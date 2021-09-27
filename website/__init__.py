@@ -17,6 +17,7 @@ app = Flask(__name__)
 CORS(app)
 
 socketio = SocketIO(app)
+socketio.init_app(app, cors_allowed_origins="*")
 
 from .views import views
 from .auth import auth
