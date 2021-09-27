@@ -25,7 +25,7 @@ def _encrypt_id(num):
 
 
 def _decrypt_id(enc):
-    return int(int(enc[::-1], 16) / 651 - 54)
+    return int(int(enc[::-1], 16) / 651 - 51)
 
 
 def generate_invitation_code(team_id):

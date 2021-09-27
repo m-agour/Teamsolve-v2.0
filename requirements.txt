@@ -7,3 +7,7 @@ flask_login
 pytz~=2021.1
 requests~=2.26.0
 gunicorn
+eventlet
+Flask-SocketIO==4.3.1
+python-engineio==3.13.2
+python-socketio==4.6.0
