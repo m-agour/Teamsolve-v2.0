@@ -58,7 +58,6 @@ def settings():
     set_problems_count = get_current_set().count
     sets = sorted(list(Set.objects), key=lambda x: x.id)
 
-
     if request.method == 'POST':
         set_id = int(request.form['radio'])
         if request.form['btn'] == 'change':
@@ -243,7 +242,6 @@ def message(msg):
 @socketio.on('update')
 def update():
     team = get_current_team()
-    # refresh(team)
     solved_problems = get_today_solved_problems(get_current_user())
     today_problems = get_today_problems(team.id)
     problems = [[i.id, i.name, i.code, i.judge, i in solved_problems] for i in today_problems]
