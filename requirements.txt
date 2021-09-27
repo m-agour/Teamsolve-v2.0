@@ -6,9 +6,9 @@ flask-mongoengine
 flask_login
 pytz~=2021.1
 requests~=2.26.0
-gunicorn
-eventlet
 Flask-SocketIO==4.3.1
 python-engineio==3.13.2
 python-socketio==4.6.0
 flask_cors
+gunicorn==20.1.0
+eventlet==0.30.2
