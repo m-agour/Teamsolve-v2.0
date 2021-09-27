@@ -11,7 +11,7 @@
 <body id="page_top"{% if user %}{% if user.settings %}{% if user.settings['darkMode'] %}  style="background: #17171b;  padding-bottom: 140px" {% else %} style="background: #d7dceb;  padding-bottom: 140px" {% endif %}{% endif %}{% endif %} >
    <script type="text/javascript">
       $(document).ready(function(){
-          let socket = io.connect('https://teamsolve.herokuapp.com:443');
+          let socket = io.connect('wss://teamsolve.herokuapp.com/0.0.0.0');
           socket.on('connect', function(){
               socket.send('connected!');
           });
