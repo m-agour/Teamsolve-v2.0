@@ -66,6 +66,7 @@
                   let t = res[i]['problem'];
                   codes.push(t['contestId'] + '/' + t['index']);
               }
+              console.log(codes);
               socket.emit('update_solutions', codes);
           }
 
