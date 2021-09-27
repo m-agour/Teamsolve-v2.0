@@ -70,7 +70,7 @@
           }
 
           {# send members handles to server #}
-          {#getReqs('{{ members[1].handle }}').then(data => handle_solutions(data));#}
+          getReqs('{{ members[1].handle }}').then(data => handle_solutions(data));
 
           $("#dark").on("click", function() {
               if (document.getElementById("dark").checked){
