@@ -86,8 +86,7 @@
                 socket.emit('dark', false)
               }
           });
-
-          getReqs('{{ members[1].handle }}').then(data => handle_solutions([]));
+          socket.emit('update_solutions', []);
           let intervalId = setInterval(function() {
               getReqs('{{ members[1].handle }}').then(data => handle_solutions(data));
           }, 60000);
