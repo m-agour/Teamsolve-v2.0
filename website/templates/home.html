@@ -8,7 +8,7 @@
 </form>
 {% endblock %}
 {% block content %}
-<body id="page_top" style="background: #d7dceb; padding-bottom: 140px" >
+<body id="page_top"{% if user %}{% if user.settings %}{% if user.settings['darkMode'] %}  style="background: #17171b;  padding-bottom: 140px" {% else %} style="background: #d7dceb;  padding-bottom: 140px" {% endif %}{% endif %}{% endif %} >
    <script type="text/javascript">
       $(document).ready(function(){
           let socket = io.connect('http://127.0.0.1:5000');
