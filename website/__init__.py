@@ -2,6 +2,7 @@ import mongoengine
 from flask import Flask
 from flask_socketio import *
 from flask_login import LoginManager
+from flask_cors import CORS
 
 from .application import *
 from .application.user import *
@@ -13,6 +14,8 @@ from .init_database import *
 
 
 app = Flask(__name__)
+CORS(app)
+
 socketio = SocketIO(app)
 
 from .views import views
