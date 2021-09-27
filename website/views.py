@@ -24,7 +24,7 @@ def home():
     # update_user_and_mates(team)
     # new_day(team)
 
-    thread = Thread(target=refresh, args=(team, user, socketio,))
+    thread = Thread(target=refresh, args=(team,))
 
     thread.daemon = True
     thread.start()
@@ -35,9 +35,8 @@ def home():
     team_mates_ind = range(len(team_mates))
     team_mates = [(team_mates[i].name, len(get_today_solved_problems(team_mates[i])), i,
                    len(get_dues_list(team_mates[i]))) for i in team_mates_ind]
-
+    team_members = list(get_team_members(team.id))
     team_mates = sorted(team_mates, key=lambda x: x[1], reverse=True)
-
     colors = ['#e6194B', '#4363d8', '#9A6324', '#911eb4', '#469990', '#808000', '#000075']
 
     while len(colors) < len(team_mates):
@@ -46,7 +45,7 @@ def home():
     team = get_current_team()
     dues = get_dues_list(get_current_user())
 
-    return render_template("home.html", user=user, team=team, problems=problems, solved=sol,
+    return render_template("home.html", user=user, team=team, problems=problems, solved=sol, members=team_members,
                            code=generate_invitation_code(team.id), team_mates=team_mates, colors=colors, dues=dues)
 
 
@@ -57,7 +56,8 @@ def settings():
         return redirect(url_for('views.home'))
 
     set_problems_count = get_current_set().count
-    sets = list(Set.objects)
+    sets = sorted(list(Set.objects), key=lambda x: x.id)
+
 
     if request.method == 'POST':
         set_id = int(request.form['radio'])
@@ -237,13 +237,32 @@ def solved():
 
 @socketio.on('message')
 def message(msg):
-    print(msg)
+    send(msg)
 
 
 @socketio.on('update')
 def update():
     team = get_current_team()
-    refresh(team, get_current_user(), socketio)
+    # refresh(team)
+    solved_problems = get_today_solved_problems(get_current_user())
+    today_problems = get_today_problems(team.id)
+    problems = [[i.id, i.name, i.code, i.judge, i in solved_problems] for i in today_problems]
+    socketio.emit('update', problems)
+
+
+@socketio.on('update_solutions')
+def update_solutions(solved_problems_codes):
+    print(solved_problems_codes)
+    update_user_solved_problems(get_current_user(), solved_problems_codes)
+    update()
+
+
+@socketio.on('dark')
+def dark(dm):
+    socketio.emit('messages', 'hi')
+    user = get_current_user()
+    user.settings['darkMode'] = bool(dm)
+    user.save()
 
 
 def get_current_team():
@@ -260,11 +279,8 @@ def get_current_set():
     return my_set
 
 
-def refresh(team, user, sio):
+def refresh(team):
     update_user_and_mates(team)
     new_day(team)
     check_set(team)
-    solved_problems = get_today_solved_problems(user)
-    today_problems = get_today_problems(team.id)
-    problems = [[i.id, i.name, i.code, i.judge, i in solved_problems] for i in today_problems]
-    sio.emit('update', problems)
+

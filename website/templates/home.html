@@ -16,6 +16,17 @@
               socket.send('connected!');
           });
 
+          socket.on('message', function(msg){
+              console.log(msg);
+          });
+
+          async function getReqs(handle) {
+              let url = `https://codeforces.com/api/user.status?lang=en&handle=` + handle
+              let response = await fetch(url);
+              return await response.json();
+          }
+
+          {#for(var i =0; i< {{ member }})#}
           socket.on('update', function(problems){
               let problems_list = document.getElementById('today_problems');
               problems_list.innerHTML = '';
@@ -47,18 +58,32 @@
                               </li>`
                   $("#today_problems").append(item);}
           });
-          socket.emit('update')
 
-          document.getElementById("dark").addEventListener("click", function() {
+          function handle_solutions(js){
+              let res = js['result'];
+              let codes = [];
+              for(let i=0; i< res.length; i++){
+                  let t = res[i]['problem'];
+                  codes.push(t['contestId'] + '/' + t['index']);
+              }
+              socket.emit('update_solutions', codes);
+          }
+
+          {# send members handles to server #}
+          getReqs('{{ members[1].handle }}').then(data => handle_solutions(data));
+
+          $("#dark").on("click", function() {
               if (document.getElementById("dark").checked){
                 document.getElementById("page_top").style.background = "#17171b";
                 document.getElementById("content-wrapper").style.background = "#17171b";
                 document.getElementById("hello").style.color = "#FFFFFF";
+                socket.emit('dark', true)
               }
               else{
                 document.getElementById("page_top").style.background = "#d7dceb";
                 document.getElementById("content-wrapper").style.background = "#d7dceb";
                 document.getElementById("hello").style.color = "#222222";
+                socket.emit('dark', false)
               }
           });
       });
@@ -113,6 +138,7 @@
                   {% for problem in problems %}
                   <li class="list-group-item" {% if problem.id in solved %} style="background-color: springgreen;" {% else %} style="background-color: mintcream;" {% endif %} >
                   <div class="row align-items-center no-gutters">
+                     <div class="col me-2"><span style="font-size: 20px;font-weight: bold;font-family: Nunito, sans-serif;">{{ problem.name }}</span></div>
                      <div class="col me-2"><span style="font-size: 20px;font-weight: bold;font-family: Nunito, sans-serif;">{{ problem.name }}</span></div>
                      {% if problem.judge == 'Codeforces' %}
                          {% set url = 'https://codeforces.com/problemset/problem/' + problem.code %}

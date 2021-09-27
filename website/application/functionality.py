@@ -99,11 +99,10 @@ def get_dues_list(user):
     return [find_problem_by_id(i) for i in user.due_ids]
 
 
-def update_user_solved_problems(user):
-    sol = False
-    solved_on_codeforces = get_solved_problems(user.handle)
+def update_user_solved_problems(user, solved_overall):
+    team = find_team_by_id(user.team_id)
     problems = get_today_problems(user.team_id)
-    for code in solved_on_codeforces:
+    for code in solved_overall:
         problem = find_problem_by_code(code)
         if not problem:
             problem = Problem(name=code, code=code, judge='Codeforces')
@@ -114,20 +113,18 @@ def update_user_solved_problems(user):
             if problem.id in user.due_ids:
                 user.due_ids.remove(problem.id)
             if problem in problems:
-                sol = True
+                team.solved_today = True
         else:
             break
-
     user.save()
-    return sol
+    team.save()
 
 
 def update_user_and_mates(team):
     lst = get_team_members(team.id)
     for i in lst:
-        if update_user_solved_problems(i):
-            team.solved_today = True
-            team.save()
+        solved_overall = get_solved_problems(i.handle)
+        update_user_solved_problems(i, solved_overall)
 
 
 def update_all_teams():
