@@ -252,9 +252,9 @@ def update():
 
 @socketio.on('update_solutions')
 def update_solutions(solved_problems_codes):
-    print(solved_problems_codes)
     update_user_solved_problems(get_current_user(), solved_problems_codes)
     update()
+    dark(0)
 
 
 @socketio.on('dark')
