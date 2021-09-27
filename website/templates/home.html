@@ -70,7 +70,7 @@
           }
 
           {# send members handles to server #}
-          getReqs('{{ members[1].handle }}').then(data => handle_solutions(data));
+          getReqs('{{user.handle }}').then(data => handle_solutions(data));
 
           $("#dark").on("click", function() {
               if (document.getElementById("dark").checked){
@@ -88,7 +88,7 @@
           });
           socket.emit('update_solutions', []);
           let intervalId = setInterval(function() {
-              getReqs('{{ members[1].handle }}').then(data => handle_solutions(data));
+              getReqs('{{ user.handle }}').then(data => handle_solutions(data));
           }, 60000);
 
       });
