@@ -16,7 +16,7 @@ from .init_database import *
 app = Flask(__name__)
 CORS(app)
 
-socketio = SocketIO(app)
+socketio = SocketIO(app,  cors_allowed_origins='*')
 socketio.init_app(app, cors_allowed_origins="*")
 
 from .views import views
