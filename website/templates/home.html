@@ -16,14 +16,6 @@
           socket.on('connect', function(){
               socket.send('connected!');
               getReqs('{{user.handle }}').then(data => handle_solutions(data));
-              getReqs('{{user.handle }}').then(data => console.log(data));
-              getReqs('{{user.handle }}').then(data => console.log(data));
-              getReqs('{{user.handle }}').then(data => console.log(data));
-              getReqs('{{user.handle }}').then(data => console.log(data));
-              getReqs('{{user.handle }}').then(data => console.log(data));
-              getReqs('{{user.handle }}').then(data => console.log(data));
-              getReqs('{{user.handle }}').then(data => console.log(data));
-              getReqs('{{user.handle }}').then(data => console.log(data));
           });
 
           socket.on('message', function(msg){
