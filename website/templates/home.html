@@ -33,14 +33,36 @@
               {# update current user #}
               getReqs('{{user.handle }}').then(data => handle_solutions(data, {{ user.id }}));
               {# update progress and problems for current user #}
-              socket.emit('update user progress and problems')
+              socket.emit('update dashboard')
               {# update other members#}
               {% for i in team_mates %}
                    getReqs('{{ i[0].handle }}').then(data => handle_solutions(data, {{ i[0].id }}));
               {% endfor %}
           }
 
-          socket.on('update user progress and problems', function(problems){
+          socket.on('update team mates progress', function(team_mates){
+              let progress_list = document.getElementById('team_mates_progress');
+              progress_list.innerHTML = '';
+              let sec = '';
+              for(let i=0; i < team_mates.length; i++){
+                  let m = team_mates[i];
+                  let name = m[0];
+                  let num = m[1];
+                  let color = m[2];
+
+              sec += `<h4 class="small fw-bold" style="color:` + color + `">` + name + ` </h4>
+                  <div>
+                     <h4 class="small fw-bold"><span class="float-end" style="color: black; padding-left: 20px">`+ num.toString() + ` / {{ problems|length }}</span></h4>
+                  </div>
+                  <div class="progress progress mb-4">
+                     <div class="progress-bar bg-gradient-primary"  aria-valuenow="` + ( num / {{ problems|length * 100 }}).toString() + `" aria-valuemin="0" aria-valuemax="100" style=" background:` + color + `; width: ` + ( num / {{ problems|length * 100 }}).toString() + `%;">
+                        <span class="visually-hidden">` + ( num / {{ problems|length * 100 }}).toString() + `%</span>
+                     </div>
+                  </div>`
+              }
+              progress_list.innerHTML = sec;
+          });
+          socket.on('update page', function(problems){
               let problems_list = document.getElementById('today_problems');
               problems_list.innerHTML = '';
               for(let i=0; i < problems.length; i++){
@@ -79,7 +101,7 @@
                   let t = res[i]['problem'];
                   codes.push(t['contestId'] + '/' + t['index']);
               }
-              socket.emit('update_solutions_for_user', user_id, codes);
+              socket.emit('update solutions for user', user_id, codes);
           }
 
 
@@ -155,7 +177,6 @@
                   <li class="list-group-item" {% if problem.id in solved %} style="background-color: springgreen;" {% else %} style="background-color: mintcream;" {% endif %} >
                   <div class="row align-items-center no-gutters">
                      <div class="col me-2"><span style="font-size: 20px;font-weight: bold;font-family: Nunito, sans-serif;">{{ problem.name }}</span></div>
-                     <div class="col me-2"><span style="font-size: 20px;font-weight: bold;font-family: Nunito, sans-serif;">{{ problem.name }}</span></div>
                      {% if problem.judge == 'Codeforces' %}
                          {% set url = 'https://codeforces.com/problemset/problem/' + problem.code %}
                      {% elif problem.judge == 'SPOJ' %}
@@ -214,7 +235,7 @@
                <div class="card-header py-3">
                   <h6 class=" fw-bold m-0" style="color: darkslateblue; font-size: 20px; padding-left: 5px">Team mates progress</h6>
                </div>
-               <div class="card-body">
+               <div class="card-body" id="team_mates_progress">
                   {% for member, num, i, dues_num in team_mates %}
                   {% set m = team_mates[i] %}
                   <h4 class="small fw-bold" style="color:{{ colors[i] }}">{{ member.name }}

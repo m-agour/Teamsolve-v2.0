@@ -239,16 +239,26 @@ def message(msg):
     send(msg)
 
 
-@socketio.on('update user progress and problems')
-def update_problems_progress():
+@socketio.on('update dashboard')
+def update_dashboard():
+    # user progress and problemset
     team = get_current_team()
     solved_problems = get_today_solved_problems(get_current_user())
     today_problems = get_today_problems(team.id)
     problems = [[i.id, i.name, i.code, i.judge, i in solved_problems] for i in today_problems]
     socketio.emit('update user progress and problems', problems)
 
+    # progress of mates
+    team_mates = get_team_mates(current_user)
+    colors = ['#e6194B', '#911eb4', '#4363d8', '#469990', '#9A6324', '#808000', '#000075']
+    while len(colors) < len(team_mates):
+        colors += colors
+    t_len = len(team_mates)
+    team_mates = [[team_mates[i].name, len(get_today_solved_problems(team_mates[i])), colors[i]] for i in range(t_len)]
+    socketio.emit('update team mates progress', team_mates)
 
-@socketio.on('update_solutions_for_user')
+
+@socketio.on('update solutions for user')
 def update_solutions(user_id, solved_problems_codes):
     update_user_solved_problems(find_user_by_id(user_id), solved_problems_codes)
 
