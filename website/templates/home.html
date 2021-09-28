@@ -15,7 +15,8 @@
           let socket = io.connect( window.location.origin, {transports: ['websocket']});
           socket.on('connect', function(){
               socket.send('connected!');
-              getReqs('{{user.handle }}').then(data => handle_solutions(data));
+              {# update solved problems for you and team members #}
+              update_team()
           });
 
           socket.on('message', function(msg){
@@ -28,8 +29,18 @@
               return await response.json();
           }
 
-          {#for(var i =0; i< {{ member }})#}
-          socket.on('update', function(problems){
+          function update_team(){
+              {# update current user #}
+              getReqs('{{user.handle }}').then(data => handle_solutions(data, {{ user.id }}));
+              {# update progress and problems for current user #}
+              socket.emit('update user progress and problems')
+              {# update other members#}
+              {% for i in team_mates %}
+                   getReqs('{{ i[0].handle }}').then(data => handle_solutions(data, {{ i[0].id }}));
+              {% endfor %}
+          }
+
+          socket.on('update user progress and problems', function(problems){
               let problems_list = document.getElementById('today_problems');
               problems_list.innerHTML = '';
               for(let i=0; i < problems.length; i++){
@@ -61,35 +72,34 @@
                   $("#today_problems").append(item);}
           });
 
-          function handle_solutions(js){
-              let res = js['result'];
+          function handle_solutions(resp, user_id){
+              let res = resp['result'];
               let codes = [];
               for(let i=0; i< res.length; i++){
                   let t = res[i]['problem'];
                   codes.push(t['contestId'] + '/' + t['index']);
               }
-              socket.emit('update_solutions', codes);
+              socket.emit('update_solutions_for_user', user_id, codes);
           }
 
-          {# send members handles to server #}
 
           $("#dark").on("click", function() {
               if (document.getElementById("dark").checked){
                 document.getElementById("page_top").style.background = "#17171b";
                 document.getElementById("content-wrapper").style.background = "#17171b";
                 document.getElementById("hello").style.color = "#FFFFFF";
-                socket.emit('dark', true)
+                socket.emit('dark', true);
               }
               else{
                 document.getElementById("page_top").style.background = "#d7dceb";
                 document.getElementById("content-wrapper").style.background = "#d7dceb";
                 document.getElementById("hello").style.color = "#222222";
-                socket.emit('dark', false)
+                socket.emit('dark', false);
               }
           });
-          socket.emit('update_solutions', []);
+
           let intervalId = setInterval(function() {
-              getReqs('{{ user.handle }}').then(data => handle_solutions(data));
+
           }, 60000);
 
       });
@@ -205,9 +215,9 @@
                   <h6 class=" fw-bold m-0" style="color: darkslateblue; font-size: 20px; padding-left: 5px">Team mates progress</h6>
                </div>
                <div class="card-body">
-                  {% for name, num, i, dues_num in team_mates %}
+                  {% for member, num, i, dues_num in team_mates %}
                   {% set m = team_mates[i] %}
-                  <h4 class="small fw-bold" style="color:{{ colors[i] }}">{{ name }}
+                  <h4 class="small fw-bold" style="color:{{ colors[i] }}">{{ member.name }}
                      <span class="float-end" {% if dues_num == 0 %} style="color: forestgreen; white-space:pre;" {% else %}  style="color: red;" {% endif %}> {% if dues_num == 0 %} No dues {% else %}Have dues{% endif %}</span>
                   </h4>
                   <div>

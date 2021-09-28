@@ -33,7 +33,7 @@ def home():
     problems = get_today_problems(team.id)
     team_mates = get_team_mates(current_user)
     team_mates_ind = range(len(team_mates))
-    team_mates = [(team_mates[i].name, len(get_today_solved_problems(team_mates[i])), i,
+    team_mates = [(team_mates[i], len(get_today_solved_problems(team_mates[i])), i,
                    len(get_dues_list(team_mates[i]))) for i in team_mates_ind]
     team_members = list(get_team_members(team.id))
     team_mates = sorted(team_mates, key=lambda x: x[1], reverse=True)
@@ -239,19 +239,18 @@ def message(msg):
     send(msg)
 
 
-@socketio.on('update')
-def update():
+@socketio.on('update user progress and problems')
+def update_problems_progress():
     team = get_current_team()
     solved_problems = get_today_solved_problems(get_current_user())
     today_problems = get_today_problems(team.id)
     problems = [[i.id, i.name, i.code, i.judge, i in solved_problems] for i in today_problems]
-    socketio.emit('update', problems)
+    socketio.emit('update user progress and problems', problems)
 
 
-@socketio.on('update_solutions')
-def update_solutions(solved_problems_codes):
-    update_user_solved_problems(get_current_user(), solved_problems_codes)
-    update()
+@socketio.on('update_solutions_for_user')
+def update_solutions(user_id, solved_problems_codes):
+    update_user_solved_problems(find_user_by_id(user_id), solved_problems_codes)
 
 
 @socketio.on('dark')
