@@ -12,7 +12,7 @@
 
 <script type="text/javascript">
       $(document).ready(function(){
-          let socket = io.connect();
+          let socket = io.connect( window.location.origin, {transports: ['websocket']});
           socket.on('connect', function(){
               socket.send('connected!');
               getReqs('{{user.handle }}').then(data => handle_solutions(data));
