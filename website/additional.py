@@ -37,5 +37,5 @@ def get_team_id_from_invitation_code(code):
 
 
 def get_color(index):
-    colors = ['#1A1831', '#346751', '#082032', '#161616', '#03051E', '#A21232', '#20615B', '#B55400', '#420516']
-    return colors[index % 9]
+    colors = ['#fb2d60', '#2478b7', '#ea2128', '#f3bd19', '#8b1ec4']
+    return colors[index % 5 ]

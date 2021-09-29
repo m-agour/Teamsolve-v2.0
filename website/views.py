@@ -245,7 +245,8 @@ def update_dashboard():
     # progress of mates
     team_mates = get_team_mates(current_user)
     t_len = len(team_mates)
-    team_mates = [[team_mates[i].name, len(get_today_solved_problems(team_mates[i])), get_color(i)] for i in range(t_len)]
+    team_mates = [[team_mates[i].name, len(get_today_solved_problems(team_mates[i])), get_dues_list(team_mates[i]),
+                   get_color(i)] for i in range(t_len)]
     socketio.emit('update team mates progress', team_mates)
 
 
