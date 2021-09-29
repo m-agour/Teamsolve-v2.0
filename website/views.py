@@ -33,20 +33,14 @@ def home():
     problems = get_today_problems(team.id)
     team_mates = get_team_mates(current_user)
     team_mates_ind = range(len(team_mates))
-    team_mates = [(team_mates[i], len(get_today_solved_problems(team_mates[i])), i,
+    team_mates = [(team_mates[i], len(get_today_solved_problems(team_mates[i])), get_color(i),
                    len(get_dues_list(team_mates[i]))) for i in team_mates_ind]
-    team_members = list(get_team_members(team.id))
     team_mates = sorted(team_mates, key=lambda x: x[1], reverse=True)
-    colors = ['#e6194B', '#4363d8', '#9A6324', '#911eb4', '#469990', '#808000', '#000075']
-
-    while len(colors) < len(team_mates):
-        colors += colors
 
     team = get_current_team()
     dues = get_dues_list(get_current_user())
-
-    return render_template("home.html", user=user, team=team, problems=problems, solved=sol, members=team_members,
-                           code=generate_invitation_code(team.id), team_mates=team_mates, colors=colors, dues=dues)
+    return render_template("home.html", user=user, team=team, problems=problems, solved=sol,
+                           code=generate_invitation_code(team.id), team_mates=team_mates, dues=dues)
 
 
 @views.route('/settings', methods=['GET', 'POST'])
@@ -246,15 +240,12 @@ def update_dashboard():
     solved_problems = get_today_solved_problems(get_current_user())
     today_problems = get_today_problems(team.id)
     problems = [[i.id, i.name, i.code, i.judge, i in solved_problems] for i in today_problems]
-    socketio.emit('update user progress and problems', problems)
+    socketio.emit('update problem set', problems)
 
     # progress of mates
     team_mates = get_team_mates(current_user)
-    colors = ['#e6194B', '#911eb4', '#4363d8', '#469990', '#9A6324', '#808000', '#000075']
-    while len(colors) < len(team_mates):
-        colors += colors
     t_len = len(team_mates)
-    team_mates = [[team_mates[i].name, len(get_today_solved_problems(team_mates[i])), colors[i]] for i in range(t_len)]
+    team_mates = [[team_mates[i].name, len(get_today_solved_problems(team_mates[i])), get_color(i)] for i in range(t_len)]
     socketio.emit('update team mates progress', team_mates)
 
 

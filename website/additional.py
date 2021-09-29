@@ -34,3 +34,8 @@ def generate_invitation_code(team_id):
 
 def get_team_id_from_invitation_code(code):
     return _decrypt_id(code)
+
+
+def get_color(index):
+    colors = ['#1A1831', '#346751', '#082032', '#161616', '#03051E', '#A21232', '#20615B', '#B55400', '#420516']
+    return colors[index % 9]

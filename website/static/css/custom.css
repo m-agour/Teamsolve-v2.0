@@ -1,0 +1,10 @@
+.title-card{
+    margin: 6px 4px 4px;
+}
+.card-header-background-dark {
+    background: #f6c23e;
+}
+
+.card-header-background-light {
+    background: #559e672b;
+}
