@@ -233,8 +233,8 @@ def message(msg):
     send(msg)
 
 
-@socketio.on('update dashboard')
-def update_dashboard():
+@socketio.on('update problem set')
+def update_problem_set():
     # user progress and problemset
     team = get_current_team()
     solved_problems = get_today_solved_problems(get_current_user())
@@ -242,6 +242,9 @@ def update_dashboard():
     problems = [[i.id, i.name, i.code, i.judge, i in solved_problems] for i in today_problems]
     socketio.emit('update problem set', problems)
 
+
+@socketio.on('update mates progress')
+def update_mates_progress():
     # progress of mates
     team_mates = get_team_mates(current_user)
     t_len = len(team_mates)

@@ -10,13 +10,9 @@
 {% block content %}
 <body id="page_top"{% if user %}{% if user.settings %}{% if user.settings['darkMode'] %}  style="background: #17171b;  padding-bottom: 140px" {% else %} style="background: #d7dceb;  padding-bottom: 140px" {% endif %}{% endif %}{% endif %} >
 <script type="text/javascript">
-    $(document).ready(function() {
-        let socket = io.connect(window.location.origin, {transports: ['websocket']});
-        socket.on('connect', function () {
-            socket.send('connected!');
-            {# update solved problems for you and team members #}
-            update_team()
-        });
+
+    var socket = io.connect(window.location.origin, {transports: ['websocket']});
+    {#$(document).ready(function() {#}
         socket.on('message', function (msg) {
             console.log(msg);
         });
@@ -25,15 +21,6 @@
             let url = `https://codeforces.com/api/user.status?lang=en&handle=` + handle
             let response = await fetch(url);
             return await response.json();
-        }
-
-        function update_team() {
-            {# update current user #}
-            getReqs('{{user.handle }}').then(data => handle_solutions(data, {{ user.id }}), socket.emit('update problem set'));
-            {# update other members#}
-            {% for i in team_mates %}
-                getReqs('{{ i[0].handle }}').then(data => handle_solutions(data, {{ i[0].id }}));
-            {% endfor %}
         }
 
         socket.on('update team mates progress', function (team_mates) {
@@ -105,11 +92,24 @@
             socket.emit('update solutions for user', user_id, codes);
         }
 
+        function update_team() {
+            {# update current user #}
+            getReqs('{{user.handle }}').then(data => handle_solutions(data, {{ user.id }}), socket.emit('update problem set'));
+            {# update other members#}
+            {% for i in team_mates %}
+                getReqs('{{ i[0].handle }}').then(data => handle_solutions(data, {{ i[0].id }}
+                    {% if i == team_mates|length - 1 %}
+                        , socket.emit('update mates progress')
+                    {% endif %}
+                ));
+            {% endfor %}
+        }
+
 	    $("#refresh-problems").on("click", function() {
 	        document.getElementById("refresh-problems").innerHTML = '<i class="fa fa-refresh fa-spin" style="font-size:24px" ></i>'
             getReqs('{{user.handle }}').then(data => handle_solutions(data, {{ user.id }}), socket.emit('update dashboard'));
         });
-    });
+    {#/});#}
 
 	    $("#dark").on("click", function() {
 	        if (document.getElementById("dark").checked){
@@ -130,7 +130,13 @@
 
 	    }, 60000);
 
-
+    $("#today_problems").ready(function() {
+            socket.on('connect', function () {
+                socket.send('connected!');
+                {# update solved problems for you and team members #}
+                update_team()
+            });
+    });
 
 </script>
 {% if not user.team_id %}
@@ -192,7 +198,7 @@
 								{% if problem.judge != 'Codeforces' and problem.id not in solved %}
 								<button class="btn btn-primary" type="button" style="background-color:darkcyan; text-align: center;padding-right: 11px;margin-right: 18px;height: 35px;width: 86.125px;" onclick="window.location.href='{{ url_for("views.solved", id=problem.id,  type="new") }}';"><span style="color: white">Solved?</span></button>
 								{% endif %}
-								<button  class="btn btn-primary" type="button" target='_blank'  style="text-align: center;padding-right: 11px;margin-left: 0px;height: 35px;width: 105.125px;margin-right: 0px;background: rgb(162,62,239);color: var(--bs-body-bg);border-style: none;border-color: var(--bs-blue);" onclick= "window.open('{{url}}','_blank');return false;"> {{problem.judge}} </button>
+								<button  class="btn btn-primary" type="button" target='_blank'  style="text-align: center;padding-right: 11px;margin-left: 0px;height: 35px;width: 105.125px;margin-right: 0px;background: rgb(162,62,239);color: var(--bs-body-bg);border-style: none;border-color: var(--bs-blue);" onclick= "window.open('{{url}}','_blank');return false;"> !{{problem.judge}} </button>
 							</div>
 						</div>
 						</li>
