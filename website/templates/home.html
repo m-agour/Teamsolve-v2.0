@@ -130,13 +130,13 @@
 
 	    }, 60000);
 
-    $("#today_problems").ready(function() {
-            socket.on('connect', function () {
-                socket.send('connected!');
-                {# update solved problems for you and team members #}
-                update_team()
-            });
-    });
+
+        socket.on('connect', function () {
+            socket.send('connected!');
+            {# update solved problems for you and team members #}
+            update_team()
+        });
+
 
 </script>
 {% if not user.team_id %}
