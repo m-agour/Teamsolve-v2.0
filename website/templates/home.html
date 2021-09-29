@@ -48,6 +48,7 @@
             progress_list.innerHTML = sec;
         });
 
+    $("#today_problems").ready(
         socket.on('update problem set', function (problems) {
             let problems_list = document.getElementById('today_problems');
             problems_list.innerHTML = '';
@@ -80,7 +81,7 @@
                 $("#today_problems").append(item);
             }
             document.getElementById("refresh-problems").innerHTML = '<i class="fa fa-refresh" style="font-size:24px" ></i>'
-        });
+        }));
 
         function handle_solutions(resp, user_id) {
             let res = resp['result'];
