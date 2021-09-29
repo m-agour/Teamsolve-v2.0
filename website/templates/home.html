@@ -104,32 +104,30 @@
                 ));
             {% endfor %}
         }
+        $(document).ready(function() {
+            $("#refresh-problems").on("click", function () {
+                document.getElementById("refresh-problems").innerHTML = '<i class="fa fa-refresh fa-spin" style="font-size:24px" ></i>'
+                getReqs('{{user.handle }}').then(data => handle_solutions(data, {{ user.id }}), socket.emit('update dashboard'));
+            });
 
-	    $("#refresh-problems").on("click", function() {
-	        document.getElementById("refresh-problems").innerHTML = '<i class="fa fa-refresh fa-spin" style="font-size:24px" ></i>'
-            getReqs('{{user.handle }}').then(data => handle_solutions(data, {{ user.id }}), socket.emit('update dashboard'));
+            $("#dark").on("click", function () {
+                if (document.getElementById("dark").checked) {
+                    document.getElementById("page_top").style.background = "#17171b";
+                    document.getElementById("content-wrapper").style.background = "#17171b";
+                    document.getElementById("hello").style.color = "#FFFFFF";
+                    socket.emit('dark', true);
+                } else {
+                    document.getElementById("page_top").style.background = "#d7dceb";
+                    document.getElementById("content-wrapper").style.background = "#d7dceb";
+                    document.getElementById("hello").style.color = "#222222";
+                    socket.emit('dark', false);
+                }
+            });
+
+            let intervalId = setInterval(function () {
+
+            }, 60000);
         });
-    {#/});#}
-
-	    $("#dark").on("click", function() {
-	        if (document.getElementById("dark").checked){
-	          document.getElementById("page_top").style.background = "#17171b";
-	          document.getElementById("content-wrapper").style.background = "#17171b";
-	          document.getElementById("hello").style.color = "#FFFFFF";
-	          socket.emit('dark', true);
-	        }
-	        else{
-	          document.getElementById("page_top").style.background = "#d7dceb";
-	          document.getElementById("content-wrapper").style.background = "#d7dceb";
-	          document.getElementById("hello").style.color = "#222222";
-	          socket.emit('dark', false);
-	        }
-	    });
-
-	    let intervalId = setInterval(function() {
-
-	    }, 60000);
-
 
         socket.on('connect', function () {
             socket.send('connected!');
