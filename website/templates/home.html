@@ -79,9 +79,7 @@
 	                        </li>`
                 $("#today_problems").append(item);
             }
-            $("refresh-problems").ready(
             document.getElementById("refresh-problems").innerHTML = '<i class="fa fa-refresh" style="font-size:24px" ></i>'
-            );
         });
 
         function handle_solutions(resp, user_id) {
