@@ -12,7 +12,7 @@
 <script type="text/javascript">
 
     var socket = io.connect(window.location.origin, {transports: ['websocket']});
-    {#$(document).ready(function() {#}
+    $(document).ready(function() {
         socket.on('message', function (msg) {
             console.log(msg);
         });
@@ -79,9 +79,8 @@
 	                        </li>`
                 $("#today_problems").append(item);
             }
-            document.getElementById("refresh-problems").innerHTML = '<i class="fa fa-refresh" style="font-size:24px" ></i>'
+            document.getElementById("refresh-problems").innerHTML = '<i class="fa fa-refresh" style="font-size:24px" ></i>';
         });
-
         function handle_solutions(resp, user_id) {
             let res = resp['result'];
             let codes = [];
@@ -105,8 +104,6 @@
             {% endfor %}
         }
 
-    {#/});#}
-$(document).ready(function() {
     $("#refresh-problems").on("click", function() {
         document.getElementById("refresh-problems").innerHTML = '<i class="fa fa-refresh fa-spin" style="font-size:24px" disabled></i>'
         getReqs('{{user.handle }}').then(data => handle_solutions(data, {{ user.id }}), socket.emit('update dashboard'));
