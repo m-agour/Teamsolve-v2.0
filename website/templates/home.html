@@ -48,7 +48,6 @@
             progress_list.innerHTML = sec;
         });
 
-    $("#today_problems").ready(
         socket.on('update problem set', function (problems) {
             let problems_list = document.getElementById('today_problems');
             problems_list.innerHTML = '';
@@ -80,8 +79,10 @@
 	                        </li>`
                 $("#today_problems").append(item);
             }
+            $("refresh-problems").ready(
             document.getElementById("refresh-problems").innerHTML = '<i class="fa fa-refresh" style="font-size:24px" ></i>'
-        }));
+            );
+        });
 
         function handle_solutions(resp, user_id) {
             let res = resp['result'];
@@ -105,30 +106,31 @@
                 ));
             {% endfor %}
         }
-        $(document).ready(function() {
-            $("#refresh-problems").on("click", function () {
-                document.getElementById("refresh-problems").innerHTML = '<i class="fa fa-refresh fa-spin" style="font-size:24px" ></i>'
-                getReqs('{{user.handle }}').then(data => handle_solutions(data, {{ user.id }}), socket.emit('update dashboard'));
-            });
 
-            $("#dark").on("click", function () {
-                if (document.getElementById("dark").checked) {
-                    document.getElementById("page_top").style.background = "#17171b";
-                    document.getElementById("content-wrapper").style.background = "#17171b";
-                    document.getElementById("hello").style.color = "#FFFFFF";
-                    socket.emit('dark', true);
-                } else {
-                    document.getElementById("page_top").style.background = "#d7dceb";
-                    document.getElementById("content-wrapper").style.background = "#d7dceb";
-                    document.getElementById("hello").style.color = "#222222";
-                    socket.emit('dark', false);
-                }
-            });
+    {#/});#}
+$(document).ready(function() {
+    $("#refresh-problems").on("click", function() {
+        document.getElementById("refresh-problems").innerHTML = '<i class="fa fa-refresh fa-spin" style="font-size:24px" disabled></i>'
+        getReqs('{{user.handle }}').then(data => handle_solutions(data, {{ user.id }}), socket.emit('update dashboard'));
+    });
+    $("#dark").on("click", function () {
+        if (document.getElementById("dark").checked) {
+            document.getElementById("page_top").style.background = "#17171b";
+            document.getElementById("content-wrapper").style.background = "#17171b";
+            document.getElementById("hello").style.color = "#FFFFFF";
+            socket.emit('dark', true);
+        } else {
+            document.getElementById("page_top").style.background = "#d7dceb";
+            document.getElementById("content-wrapper").style.background = "#d7dceb";
+            document.getElementById("hello").style.color = "#222222";
+            socket.emit('dark', false);
+        }
+    });
 
-            let intervalId = setInterval(function () {
+    let intervalId = setInterval(function () {
 
-            }, 60000);
-        });
+    }, 60000);
+});
 
         socket.on('connect', function () {
             socket.send('connected!');
@@ -197,7 +199,7 @@
 								{% if problem.judge != 'Codeforces' and problem.id not in solved %}
 								<button class="btn btn-primary" type="button" style="background-color:darkcyan; text-align: center;padding-right: 11px;margin-right: 18px;height: 35px;width: 86.125px;" onclick="window.location.href='{{ url_for("views.solved", id=problem.id,  type="new") }}';"><span style="color: white">Solved?</span></button>
 								{% endif %}
-								<button  class="btn btn-primary" type="button" target='_blank'  style="text-align: center;padding-right: 11px;margin-left: 0px;height: 35px;width: 105.125px;margin-right: 0px;background: rgb(162,62,239);color: var(--bs-body-bg);border-style: none;border-color: var(--bs-blue);" onclick= "window.open('{{url}}','_blank');return false;">! {{problem.judge}} </button>
+								<button  class="btn btn-primary" type="button" target='_blank'  style="text-align: center;padding-right: 11px;margin-left: 0px;height: 35px;width: 105.125px;margin-right: 0px;background: rgb(162,62,239);color: var(--bs-body-bg);border-style: none;border-color: var(--bs-blue);" onclick= "window.open('{{url}}','_blank');return false;"> !{{problem.judge}} </button>
 							</div>
 						</div>
 						</li>
