@@ -8,3 +8,7 @@
 .card-header-background-light {
     background: #559e672b;
 }
+.btn {
+  outline: none;
+  box-shadow: none;
+}
