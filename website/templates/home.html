@@ -12,75 +12,77 @@
 <script type="text/javascript">
 
     var socket = io.connect(window.location.origin, {transports: ['websocket']});
-    $(document).ready(function() {
-        socket.on('message', function (msg) {
-            console.log(msg);
-        });
 
+$(document).ready(function() {
+    socket.on('message', function (msg) {
+        console.log(msg);
+    });
+
+    socket.on('update team mates progress', function (team_mates) {
+        let progress_list = document.getElementById('team_mates_progress');
+        progress_list.innerHTML = '';
+        let sec = '';
+        for (let i = 0; i < team_mates.length; i++) {
+            let m = team_mates[i];
+            let name = m[0];
+            let num = m[1];
+            let dues_num = m[2];
+            let color = m[3];
+            let dues = `<span class="float-end" style="color: forestgreen; white-space:pre;">No dues</span>`
+            if (dues_num) dues = `<span class="float-end" style="color: red; white-space:pre;">Have dues</span>`;
+            sec += `<h4 class="small fw-bold" style="color:` + color + `">` + name + dues + `</h4>
+            <div>
+               <h4 class="small fw-bold"><span class="float-end" style="color: black; padding-left: 20px">` + num.toString() + ` / {{ problems|length }}</span></h4>
+            </div>
+            <div class="progress progress mb-4">
+               <div class="progress-bar bg-gradient-primary"  aria-valuenow="` + (num / {{ problems|length * 100 }}).toString() + `" aria-valuemin="0" aria-valuemax="100" style=" background:` + color + `; width: ` + (num / {{ problems|length * 100 }}).toString() + `%;">
+                  <span class="visually-hidden">` + (num / {{ problems|length * 100 }}).toString() + `%</span>
+               </div>
+            </div>`
+        }
+        progress_list.innerHTML = sec;
+    });
+
+    socket.on('update problem set', function (problems) {
+        let problems_list = document.getElementById('today_problems');
+        problems_list.innerHTML = '';
+        for (let i = 0; i < problems.length; i++) {
+            let id = problems[i][0];
+            let name = problems[i][1];
+            let code = problems[i][2];
+            let judge = problems[i][3];
+            let solved = problems[i][4];
+
+            let url = 'https://codeforces.com/problemset/problem/' + code;
+            let solved_button = ' ';
+            if (judge !== 'Codeforces') {
+                url = 'https://www.spoj.com/problems/' + code;
+                solved_button = `<button class="btn btn-primary" type="button" style="background-color:darkcyan; text-align: center;padding-right: 11px;margin-right: 18px;height: 35px;width: 86.125px;" onclick="window.location.href='';"><span style="color: white">Solved?</span></button>`
+            }
+            let color = 'mintcream';
+            if (solved)
+                color = 'springgreen';
+
+            let item = `<li class="list-group-item" id=` + id.toString() + ` style="background-color: ` + color + `;">
+                            <div class="row align-items-center no-gutters">
+                             <div class="col me-2"><span style="font-size: 20px;font-weight: bold;font-family: Nunito, sans-serif;">` + name + `</span></div>
+                             <div class="col-auto">`
+                + solved_button +
+                `<button  class="btn btn-primary" type="button" target='_blank'  style="text-align: center;padding-right: 11px;margin-left: 0px;height: 35px;width: 105.125px;margin-right: 0px;background: rgb(162,62,239);color: var(--bs-body-bg);border-style: none;border-color: var(--bs-blue);" onclick= "window.open('` + url + `','_blank');return false;">Codeforces</button>
+                             </div>
+                            </div>
+                        </li>`
+            $("#today_problems").append(item);
+        }
+        document.getElementById("refresh-problems").innerHTML = '<i class="fa fa-refresh" style="font-size:24px" ></i>';
+    });
+});
         async function getReqs(handle) {
             let url = `https://codeforces.com/api/user.status?lang=en&handle=` + handle
             let response = await fetch(url);
             return await response.json();
         }
 
-        socket.on('update team mates progress', function (team_mates) {
-            let progress_list = document.getElementById('team_mates_progress');
-            progress_list.innerHTML = '';
-            let sec = '';
-            for (let i = 0; i < team_mates.length; i++) {
-                let m = team_mates[i];
-                let name = m[0];
-                let num = m[1];
-                let dues_num = m[2];
-                let color = m[3];
-                let dues = `<span class="float-end" style="color: forestgreen; white-space:pre;">No dues</span>`
-                if(dues_num) dues = `<span class="float-end" style="color: red; white-space:pre;">Have dues</span>`;
-                sec += `<h4 class="small fw-bold" style="color:` + color + `">` + name + dues +`</h4>
-	            <div>
-	               <h4 class="small fw-bold"><span class="float-end" style="color: black; padding-left: 20px">` + num.toString() + ` / {{ problems|length }}</span></h4>
-	            </div>
-	            <div class="progress progress mb-4">
-	               <div class="progress-bar bg-gradient-primary"  aria-valuenow="` + (num / {{ problems|length * 100 }}).toString() + `" aria-valuemin="0" aria-valuemax="100" style=" background:` + color + `; width: ` + (num / {{ problems|length * 100 }}).toString() + `%;">
-	                  <span class="visually-hidden">` + (num / {{ problems|length * 100 }}).toString() + `%</span>
-	               </div>
-	            </div>`
-            }
-            progress_list.innerHTML = sec;
-        });
-
-        socket.on('update problem set', function (problems) {
-            let problems_list = document.getElementById('today_problems');
-            problems_list.innerHTML = '';
-            for (let i = 0; i < problems.length; i++) {
-                let id = problems[i][0];
-                let name = problems[i][1];
-                let code = problems[i][2];
-                let judge = problems[i][3];
-                let solved = problems[i][4];
-
-                let url = 'https://codeforces.com/problemset/problem/' + code;
-                let solved_button = ' ';
-                if (judge !== 'Codeforces') {
-                    url = 'https://www.spoj.com/problems/' + code;
-                    solved_button = `<button class="btn btn-primary" type="button" style="background-color:darkcyan; text-align: center;padding-right: 11px;margin-right: 18px;height: 35px;width: 86.125px;" onclick="window.location.href='';"><span style="color: white">Solved?</span></button>`
-                }
-                let color = 'mintcream';
-                if (solved)
-                    color = 'springgreen';
-
-                let item = `<li class="list-group-item" id=` + id.toString() + ` style="background-color: ` + color + `;">
-	                            <div class="row align-items-center no-gutters">
-	                             <div class="col me-2"><span style="font-size: 20px;font-weight: bold;font-family: Nunito, sans-serif;">` + name + `</span></div>
-	                             <div class="col-auto">`
-                    + solved_button +
-                    `<button  class="btn btn-primary" type="button" target='_blank'  style="text-align: center;padding-right: 11px;margin-left: 0px;height: 35px;width: 105.125px;margin-right: 0px;background: rgb(162,62,239);color: var(--bs-body-bg);border-style: none;border-color: var(--bs-blue);" onclick= "window.open('` + url + `','_blank');return false;">Codeforces</button>
-	                             </div>
-	                            </div>
-	                        </li>`
-                $("#today_problems").append(item);
-            }
-            document.getElementById("refresh-problems").innerHTML = '<i class="fa fa-refresh" style="font-size:24px" ></i>';
-        });
         function handle_solutions(resp, user_id) {
             let res = resp['result'];
             let codes = [];
@@ -104,10 +106,12 @@
             {% endfor %}
         }
 
-    $("#refresh-problems").on("click", function() {
+$(document).ready(function() {
+    $("#refresh-problems").on("click", function () {
         document.getElementById("refresh-problems").innerHTML = '<i class="fa fa-refresh fa-spin" style="font-size:24px" disabled></i>'
-        getReqs('{{user.handle }}').then(data => handle_solutions(data, {{ user.id }}), socket.emit('update dashboard'));
+        getReqs('{{user.handle }}').then(data => handle_solutions(data, {{ user.id }}), socket.emit('update problem set'));
     });
+
     $("#dark").on("click", function () {
         if (document.getElementById("dark").checked) {
             document.getElementById("page_top").style.background = "#17171b";
@@ -125,13 +129,14 @@
     let intervalId = setInterval(function () {
 
     }, 60000);
+
 });
 
-        socket.on('connect', function () {
-            socket.send('connected!');
-            {# update solved problems for you and team members #}
-            update_team()
-        });
+socket.on('connect', function () {
+    socket.send('connected!');
+    {# update solved problems for you and team members #}
+    update_team()
+});
 
 
 </script>
