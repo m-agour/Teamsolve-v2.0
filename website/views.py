@@ -50,7 +50,8 @@ def settings():
         return redirect(url_for('views.home'))
 
     set_problems_count = get_current_set().count
-    sets = sorted(list(Set.objects), key=lambda x: x.id)
+    sets = sorted(list(Set.objects), key=lambda x: x.count, reverse=True)
+    sets = [i for i in sets if i.count >= 40]
     print([i.name for i in sets])
     if request.method == 'POST':
         if request.form['btn'] == 'change':
