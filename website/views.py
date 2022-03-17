@@ -227,7 +227,7 @@ def solved():
 
     team.save()
     user.save()
-
+    return redirect(url_for('views.home'))
 
 @socketio.on('message')
 def message(msg):
