@@ -55,8 +55,12 @@ $(document).ready(function() {
 
             let url = 'https://codeforces.com/problemset/problem/' + code;
             let solved_button = ' ';
-            if (judge !== 'Codeforces') {
+            if (judge === 'SPOJ') {
                 url = 'https://www.spoj.com/problems/' + code;
+                solved_button = `<button class="btn btn-primary" type="button" style="background-color:darkcyan; text-align: center;padding-right: 11px;margin-right: 18px;height: 35px;width: 86.125px;" onclick="window.location.href='';"><span style="color: white">Solved?</span></button>`
+            }
+            if (judge === 'Leetcode') {
+                url = 'https://leetcode.com/problems/' + code;
                 solved_button = `<button class="btn btn-primary" type="button" style="background-color:darkcyan; text-align: center;padding-right: 11px;margin-right: 18px;height: 35px;width: 86.125px;" onclick="window.location.href='';"><span style="color: white">Solved?</span></button>`
             }
             let color = 'mintcream';
@@ -68,7 +72,7 @@ $(document).ready(function() {
                              <div class="col me-2"><span style="font-size: 20px;font-weight: bold;font-family: Nunito, sans-serif;">` + name + `</span></div>
                              <div class="col-auto">`
                 + solved_button +
-                `<button  class="btn btn-primary" type="button" target='_blank'  style="text-align: center;padding-right: 11px;margin-left: 0px;height: 35px;width: 105.125px;margin-right: 0px;background: rgb(162,62,239);color: var(--bs-body-bg);border-style: none;border-color: var(--bs-blue);" onclick= "window.open('` + url + `','_blank');return false;">Codeforces</button>
+                `<button  class="btn btn-primary" type="button" target='_blank'  style="text-align: center;padding-right: 11px;margin-left: 0px;height: 35px;width: 105.125px;margin-right: 0px;background: rgb(162,62,239);color: var(--bs-body-bg);border-style: none;border-color: var(--bs-blue);" onclick= "window.open('` + url + `','_blank');return false;">` + judge + `</button>
                              </div>
                             </div>
                         </li>`

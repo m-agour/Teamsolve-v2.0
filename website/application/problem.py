@@ -6,6 +6,7 @@ class Problem(mongoengine.Document):
     name = mongoengine.StringField()
     code = mongoengine.StringField()
     judge = mongoengine.StringField()
+    paid = mongoengine.BooleanField()
 
 
 def find_problem_by_id(sid: int):

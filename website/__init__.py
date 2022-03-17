@@ -47,6 +47,8 @@ if not find_problem_by_id(1):
 
 if not find_set_by_id(2):
     load_sets()
+load_leetcode()
+
 
 if not find_user_by_id(1):
     set_my_team()

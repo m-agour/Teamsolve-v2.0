@@ -4,13 +4,14 @@ from website.application.problem import *
 from website.application.set import *
 from website.codeforces.codeforces_api import *
 from website.additional import *
+from website.leetcode.leetcode import *
 
 
 def load_problems():
     problems = generate_ordered_problems_id_name_solved()
     new_set = Set(name='Most solved on codeforces', type='main')
     new_set.save()
-
+    # codeforces
     for i in range(len(problems)):
         name = problems[i][1]
         if len(name) > 50:
@@ -20,6 +21,17 @@ def load_problems():
         new_set.problems_ids.append(prob.id)
         new_set.count += 1
     new_set.save()
+    # leetcode
+    new_set = Set(name='Most solved on Leetcode', type='main')
+    new_set.save()
+    for problem in get_leetcode_problemset():
+        name = problem[1]
+        if len(name) > 50:
+            name = name[:45] + '...'
+        prob = Problem(code=problems[0], name=name, paid=problems[2], judge='Leetcode')
+        prob.save()
+        new_set.problems_ids.append(prob.id)
+        new_set.count += 1
 
 
 def set_my_team():
@@ -69,3 +81,18 @@ def load_sets():
             new_set.count += 1
         if new_set.count > 0:
             new_set.save()
+
+def load_leetcode():
+    try:
+        Problem.objects.filter(judge='Leetcode')[0]
+    except :
+        new_set = Set(name='Most solved on Leetcode', type='main')
+        new_set.save()
+        for problem in get_leetcode_problemset():
+            name = problem[1]
+            if len(name) > 50:
+                name = name[:45] + '...'
+            prob = Problem(code=problem[0], name=name, paid=problem[2], judge='Leetcode')
+            prob.save()
+            new_set.problems_ids.append(prob.id)
+            new_set.count += 1

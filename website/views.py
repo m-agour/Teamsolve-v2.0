@@ -51,10 +51,10 @@ def settings():
 
     set_problems_count = get_current_set().count
     sets = sorted(list(Set.objects), key=lambda x: x.id)
-
+    print([i.name for i in sets])
     if request.method == 'POST':
-        set_id = int(request.form['radio'])
         if request.form['btn'] == 'change':
+            set_id = int(request.form['radio'])
             # team settings
             name = request.form.get('name')
             # user settings
@@ -136,8 +136,9 @@ def settings():
                 return redirect(url_for('views.settings'))
 
         elif request.form['btn'] == 'leave':
-            get_current_user().team_id = 0
-            get_current_user().save()
+            u = get_current_user()
+            u.team_id = 0
+            u.save()
             flash('You left the team!', category='success')
             return redirect(url_for('views.home'))
 
