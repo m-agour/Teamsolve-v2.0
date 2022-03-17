@@ -57,15 +57,16 @@ $(document).ready(function() {
             let solved_button = ' ';
             if (judge === 'SPOJ') {
                 url = 'https://www.spoj.com/problems/' + code;
-                solved_button = `<button class="btn btn-primary" type="button" style="background-color:darkcyan; text-align: center;padding-right: 11px;margin-right: 18px;height: 35px;width: 86.125px;" onclick="window.location.href='';"><span style="color: white">Solved?</span></button>`
+                solved_button = `<button class="btn btn-primary" type="button" style="background-color:darkcyan; text-align: center;padding-right: 11px;margin-right: 18px;height: 35px;width: 86.125px;" onclick="window.location.href='/solved?id=`+`id`+`&type=new';`+`';"><span style="color: white">Solved?</span></button>`
             }
             if (judge === 'Leetcode') {
                 url = 'https://leetcode.com/problems/' + code;
-                solved_button = `<button class="btn btn-primary" type="button" style="background-color:darkcyan; text-align: center;padding-right: 11px;margin-right: 18px;height: 35px;width: 86.125px;" onclick="window.location.href='';"><span style="color: white">Solved?</span></button>`
+                solved_button = `<button class="btn btn-primary" type="button" style="background-color:darkcyan; text-align: center;padding-right: 11px;margin-right: 18px;height: 35px;width: 86.125px;" onclick="window.location.href='/solved?id=`+`id`+`&type=new';`+`';"><span style="color: white">Solved?</span></button>`
             }
             let color = 'mintcream';
             if (solved)
                 color = 'springgreen';
+                solved_button = '';
 
             let item = `<li class="list-group-item" id=` + id.toString() + ` style="background-color: ` + color + `;">
                             <div class="row align-items-center no-gutters">
