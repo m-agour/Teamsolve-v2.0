@@ -21,16 +21,14 @@ def home():
         return render_template("home.html", user=user, team=None, problemset=[], solved=[],
                                code='', team_mates=[], colors=[])
 
-    # update_user_and_mates(team)
-    # new_day(team)
-
     thread = Thread(target=refresh, args=(team,))
 
     thread.daemon = True
     thread.start()
 
-    sol = get_today_solved_problems_ids(get_current_user())
-    problems = get_today_problems(team.id)
+    solved_problems = get_today_solved_problems(get_current_user())
+    today_problems = get_today_problems(team.id)
+    problems = [[i.id, i.name, i.code, i.judge, int(i in solved_problems), 0] for i in today_problems]
     team_mates = get_team_mates(current_user)
     team_mates_ind = range(len(team_mates))
     team_mates = [(team_mates[i], len(get_today_solved_problems(team_mates[i])), get_color(i),
@@ -38,9 +36,9 @@ def home():
     team_mates = sorted(team_mates, key=lambda x: x[1], reverse=True)
 
     team = get_current_team()
-    dues = get_dues_list(get_current_user())
-    return render_template("home.html", user=user, team=team, problems=problems, solved=sol,
-                           code=generate_invitation_code(team.id), team_mates=team_mates, dues=dues)
+    dues = [[i.id, i.name, i.code, i.judge, 0, 1] for i in get_dues_list(get_current_user())]
+    return render_template("home.html", user=user, team=team, problems=problems + dues,
+                           code=generate_invitation_code(team.id), team_mates=team_mates)
 
 
 @views.route('/settings', methods=['GET', 'POST'])
@@ -230,6 +228,7 @@ def solved():
     user.save()
     return redirect(url_for('views.home'))
 
+
 @socketio.on('message')
 def message(msg):
     send(msg)
@@ -241,8 +240,10 @@ def update_problem_set():
     team = get_current_team()
     solved_problems = get_today_solved_problems(get_current_user())
     today_problems = get_today_problems(team.id)
-    problems = [[i.id, i.name, i.code, i.judge, i in solved_problems] for i in today_problems]
-    socketio.emit('update problem set', problems)
+    problems = [[i.id, i.name, i.code, i.judge, i in solved_problems, 0] for i in today_problems]
+    dues = [[i.id, i.name, i.code, i.judge, 0, 1] for i in get_dues_list(get_current_user())]
+
+    socketio.emit('update problem set', problems + dues)
 
 
 @socketio.on('update mates progress')
@@ -286,4 +287,3 @@ def refresh(team):
     update_user_and_mates(team)
     new_day(team)
     check_set(team)
-

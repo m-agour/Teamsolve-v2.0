@@ -78,7 +78,6 @@ def sign_up():
             new_user = register_user(name, email, pass1, handle)
             new_user.save()
             login_user(new_user, remember=True)
-
             for code in solved_problems:
                 problem = find_problem_by_code(code)
                 if not problem:

@@ -12,7 +12,57 @@
 <script type="text/javascript">
 
     var socket = io.connect(window.location.origin, {transports: ['websocket']});
+ function update_problems(problems){
+        if (!problems || !problems[0]) return;
+        let problems_list = document.getElementById('today_problems');
+        let dues_list = document.getElementById('due_problems');
+        problems_list.innerHTML = '';
+        dues_list.innerHTML = '';
+        for (let i = 0; i < problems.length; i++) {
+            let id = problems[i][0];
+            let name = problems[i][1];
+            let code = problems[i][2];
+            let judge = problems[i][3];
+            let solved = problems[i][4];
+            let due = problems[i][5];
 
+            let url = 'https://codeforces.com/problemset/problem/' + code;
+            let solved_button = ' ';
+            if (judge === 'SPOJ') {
+                url = 'https://www.spoj.com/problems/' + code;
+                solved_button = `<button class="btn btn-primary" type="button" style="background-color:darkcyan; text-align: center;padding-right: 11px;margin-right: 18px;height: 35px;width: 86.125px;" onclick="window.location.href='/solved?id=`+id.toString()+`&type=new';`+`"><span style="color: white">Solved?</span></button>`
+            }
+            if (judge === 'Leetcode') {
+                url = 'https://leetcode.com/problems/' + code;
+                solved_button = `<button class="btn btn-primary" type="button" style="background-color:darkcyan; text-align: center;padding-right: 11px;margin-right: 18px;height: 35px;width: 86.125px;" onclick="window.location.href='/solved?id=`+id.toString()+`&type=new';`+`"><span style="color: white">Solved?</span></button>`
+            }
+            let color = 'mintcream';
+            if (solved){
+                color = 'springgreen';
+                solved_button = ' ';}
+            if (due){
+                color = 'indianred';
+            }
+
+            let item = `<li class="list-group-item" id=` + id.toString() + ` style="background-color: ` + color + `;">
+                            <div class="row align-items-center no-gutters">
+                             <div class="col me-2"><span style="font-size: 20px;font-weight: bold;font-family: Nunito, sans-serif;">` + name + `</span></div>
+                             <div class="col-auto">`
+                + solved_button +
+                `<button  class="btn btn-primary" type="button" target='_blank'  style="text-align: center;padding-right: 11px;margin-left: 0px;height: 35px;width: 105.125px;margin-right: 0px;background: rgb(162,62,239);color: var(--bs-body-bg);border-style: none;border-color: var(--bs-blue);" onclick= "window.open('` + url + `','_blank');return false;">` + judge + `</button>
+                             </div>
+                            </div>
+                        </li>`
+            if (due){
+                $("#due_problems").append(item);
+            }
+            else{
+               $("#today_problems").append(item);
+            }
+
+        }
+        document.getElementById("refresh-problems").innerHTML = '<i class="fa fa-refresh" style="font-size:24px" ></i>';
+    }
 $(document).ready(function() {
     socket.on('message', function (msg) {
         console.log(msg);
@@ -32,55 +82,20 @@ $(document).ready(function() {
             if (dues_num) dues = `<span class="float-end" style="color: red; white-space:pre;">Have dues</span>`;
             sec += `<h4 class="small fw-bold" style="color:` + color + `">` + name + dues + `</h4>
             <div>
-               <h4 class="small fw-bold"><span class="float-end" style="color: black; padding-left: 20px">` + num.toString() + ` / {{ problems|length }}</span></h4>
+               <h4 class="small fw-bold"><span class="float-end" style="color: black; padding-left: 20px">` + num.toString() + ` / {{ team.daily_goal }}</span></h4>
             </div>
             <div class="progress progress mb-4">
-               <div class="progress-bar bg-gradient-primary"  aria-valuenow="` + (num / {{ problems|length * 100 }}).toString() + `" aria-valuemin="0" aria-valuemax="100" style=" background:` + color + `; width: ` + (num / {{ problems|length * 100 }}).toString() + `%;">
-                  <span class="visually-hidden">` + (num / {{ problems|length * 100 }}).toString() + `%</span>
+               <div class="progress-bar bg-gradient-primary"  aria-valuenow="` + (num / {{ team.daily_goal * 100 }}).toString() + `" aria-valuemin="0" aria-valuemax="100" style=" background:` + color + `; width: ` + (num / {{ team.daily_goal * 100 }}).toString() + `%;">
+                  <span class="visually-hidden">` + (num / {{ team.daily_goal * 100 }}).toString() + `%</span>
                </div>
             </div>`
         }
         progress_list.innerHTML = sec;
     });
 
-    socket.on('update problem set', function (problems) {
-        let problems_list = document.getElementById('today_problems');
-        problems_list.innerHTML = '';
-        for (let i = 0; i < problems.length; i++) {
-            let id = problems[i][0];
-            let name = problems[i][1];
-            let code = problems[i][2];
-            let judge = problems[i][3];
-            let solved = problems[i][4];
 
-            let url = 'https://codeforces.com/problemset/problem/' + code;
-            let solved_button = ' ';
-            if (judge === 'SPOJ') {
-                url = 'https://www.spoj.com/problems/' + code;
-                solved_button = `<button class="btn btn-primary" type="button" style="background-color:darkcyan; text-align: center;padding-right: 11px;margin-right: 18px;height: 35px;width: 86.125px;" onclick="window.location.href='/solved?id=`+id.toString()+`&type=new';`+`"><span style="color: white">Solved?</span></button>`
-            }
-            if (judge === 'Leetcode') {
-                url = 'https://leetcode.com/problems/' + code;
-                solved_button = `<button class="btn btn-primary" type="button" style="background-color:darkcyan; text-align: center;padding-right: 11px;margin-right: 18px;height: 35px;width: 86.125px;" onclick="window.location.href='/solved?id=`+id.toString()+`&type=new';`+`"><span style="color: white">Solved?</span></button>`
-            }
-            let color = 'mintcream';
-            if (solved){
-                color = 'springgreen';
-                solved_button = ' ';}
+    socket.on('update problem set', function (problems) { update_problems(problems) });
 
-            let item = `<li class="list-group-item" id=` + id.toString() + ` style="background-color: ` + color + `;">
-                            <div class="row align-items-center no-gutters">
-                             <div class="col me-2"><span style="font-size: 20px;font-weight: bold;font-family: Nunito, sans-serif;">` + name + `</span></div>
-                             <div class="col-auto">`
-                + solved_button +
-                `<button  class="btn btn-primary" type="button" target='_blank'  style="text-align: center;padding-right: 11px;margin-left: 0px;height: 35px;width: 105.125px;margin-right: 0px;background: rgb(162,62,239);color: var(--bs-body-bg);border-style: none;border-color: var(--bs-blue);" onclick= "window.open('` + url + `','_blank');return false;">` + judge + `</button>
-                             </div>
-                            </div>
-                        </li>`
-            $("#today_problems").append(item);
-        }
-        document.getElementById("refresh-problems").innerHTML = '<i class="fa fa-refresh" style="font-size:24px" ></i>';
-    });
 });
         async function getReqs(handle) {
             let url = `https://codeforces.com/api/user.status?lang=en&handle=` + handle
@@ -191,24 +206,7 @@ socket.on('connect', function () {
                 </div>
 				<div class="card-body">
 					<ul class="list-group" id="today_problems">
-						{% for problem in problems %}
-						<li class="list-group-item" {% if problem.id in solved %} style="background-color: springgreen;" {% else %} style="background-color: mintcream;" {% endif %} >
-						<div class="row align-items-center no-gutters">
-							<div class="col me-2"><span style="font-size: 20px;font-weight: bold;font-family: Nunito, sans-serif;">{{ problem.name }}</span></div>
-							{% if problem.judge == 'Codeforces' %}
-							{% set url = 'https://codeforces.com/problemset/problem/' + problem.code %}
-							{% elif problem.judge == 'SPOJ' %}
-							{% set url = 'https://www.spoj.com/problems/' + problem.code %}
-							{% endif %}
-							<div class="col-auto">
-								{% if problem.judge != 'Codeforces' and problem.id not in solved %}
-								<button class="btn btn-primary" type="button" style="background-color:darkcyan; text-align: center;padding-right: 11px;margin-right: 18px;height: 35px;width: 86.125px;" onclick="window.location.href='{{ url_for("views.solved", id=problem.id,  type="new") }}';"><span style="color: white">Solved?</span></button>
-								{% endif %}
-								<button  class="btn btn-primary" type="button" target='_blank'  style="text-align: center;padding-right: 11px;margin-left: 0px;height: 35px;width: 105.125px;margin-right: 0px;background: rgb(162,62,239);color: var(--bs-body-bg);border-style: none;border-color: var(--bs-blue);" onclick= "window.open('{{url}}','_blank');return false;"> {{problem.judge}} </button>
-							</div>
-						</div>
-						</li>
-						{% endfor %}
+
 					</ul>
 				</div>
 			</div>
@@ -220,25 +218,7 @@ socket.on('connect', function () {
                     </div>
 				</div>
 				<div class="card-body">
-					<ul class="list-group">
-						{% for problem in dues %}
-						<li class="list-group-item" {% if problem.id in solved %} style="background-color: springgreen;" {% else %} style="background-color: indianred;" {% endif %} >
-						<div class="row align-items-center no-gutters">
-							<div class="col me-2"><span style="font-size: 20px;font-weight: bold;font-family: Nunito, sans-serif; color: black;">{{ problem.name }}</span></div>
-							{% if problem.judge == 'Codeforces' %}
-							{% set url = 'https://codeforces.com/problemset/problem/' + problem.code %}
-							{% elif problem.judge == 'SPOJ' %}
-							{% set url = 'https://www.spoj.com/problems/' + problem.code %}
-							{% endif %}
-							<div class="col-auto">
-								{% if problem.judge != 'Codeforces'%}
-								<button class="btn btn-primary" type="button" style="background-color:darkcyan; text-align: center;padding-right: 11px;margin-right: 18px;height: 35px;width: 86.125px;" onclick="window.location.href='{{ url_for("views.solved", id=problem.id,  type="due") }}';"><span style="color: white">Solved?</span></button>
-								{% endif %}
-								<button  class="btn btn-primary" type="button" target='_blank'  style="text-align: center;padding-right: 11px;margin-left: 0px;height: 35px;width: 105.125px;margin-right: 0px;background: rgb(62,100,20);color: var(--bs-body-bg);border-style: none;border-color: var(--bs-blue);" onclick= "window.open('{{url}}','_blank');return false;">{{ problem.judge }}</button>
-							</div>
-						</div>
-						</li>
-						{% endfor %}
+					<ul class="list-group"  id="due_problems">
 					</ul>
 				</div>
 			</div>
@@ -265,11 +245,11 @@ socket.on('connect', function () {
 						<span class="float-end" {% if dues_num == 0 %} style="color: forestgreen; white-space:pre;" {% else %}  style="color: red;" {% endif %}> {% if dues_num == 0 %} No dues {% else %}Have dues{% endif %}</span>
 					</h4>
 					<div>
-						<h4 class="small fw-bold" style="color:{{ color }}"><span class="float-end" style="color: black; padding-left: 20px">{{ num }} / {{ problems|length }}</span></h4>
+						<h4 class="small fw-bold" style="color:{{ color }}"><span class="float-end" style="color: black; padding-left: 20px">{{ num }} / {{ team.daily_goal }}</span></h4>
 					</div>
 					<div class="progress progress mb-4">
-						<div class="progress-bar bg-gradient-primary"  aria-valuenow="{{num / problems|length * 100 }}" aria-valuemin="0" aria-valuemax="100" style=" background: {{ color }}; width: {{ num / problems|length * 100 }}%;">
-							<span class="visually-hidden">{{ num / problems|length }}%</span>
+						<div class="progress-bar bg-gradient-primary"  aria-valuenow="{{num / team.daily_goal * 100 }}" aria-valuemin="0" aria-valuemax="100" style=" background: {{ color }}; width: {{ num / problems|length * 100 }}%;">
+							<span class="visually-hidden">{{ num / team.daily_goal }}%</span>
 						</div>
 					</div>
 					{% endfor %}
@@ -278,5 +258,9 @@ socket.on('connect', function () {
 		</div>
 	</div>
 </div>
+    <script>
+        let problems = {{ problems|safe }};
+        update_problems(problems);
+    </script>
 {% endif %}
 {% endblock %}

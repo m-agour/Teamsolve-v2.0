@@ -22,13 +22,13 @@ def get_problem(problem_id):
     return find_problem_by_id(problem_id)
 
 
-def get_today_problems(team_id):
+def get_today_problems(team_id, as_json=False):
     team = get_team(team_id)
     set_id = team.set_id
     my_set = find_set_by_id(set_id)
     start = team.index - 1
     end = min(start + team.daily_goal, my_set.count + 1)
-    return [find_problem_by_id(i) for i in my_set.problems_ids[start:end]]
+    return [find_problem_by_id(i, as_json) for i in my_set.problems_ids[start:end]]
 
 
 def get_today_problems_names(team_id):
