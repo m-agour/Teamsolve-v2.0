@@ -25,24 +25,26 @@
             let judge = problems[i][3];
             let solved = problems[i][4];
             let due = problems[i][5];
-
-            let url = 'https://codeforces.com/problemset/problem/' + code;
             let solved_button = ' ';
-            if (judge === 'SPOJ') {
-                url = 'https://www.spoj.com/problems/' + code;
-                solved_button = `<button class="btn btn-primary" type="button" style="background-color:darkcyan; text-align: center;padding-right: 11px;margin-right: 18px;height: 35px;width: 86.125px;" onclick="window.location.href='/solved?id=`+id.toString()+`&type=new';`+`"><span style="color: white">Solved?</span></button>`
-            }
-            if (judge === 'Leetcode') {
-                url = 'https://leetcode.com/problems/' + code;
-                solved_button = `<button class="btn btn-primary" type="button" style="background-color:darkcyan; text-align: center;padding-right: 11px;margin-right: 18px;height: 35px;width: 86.125px;" onclick="window.location.href='/solved?id=`+id.toString()+`&type=new';`+`"><span style="color: white">Solved?</span></button>`
-            }
-            let color = 'mintcream';
+            let type = 'new';
+                        let color = 'mintcream';
             if (solved){
                 color = 'springgreen';
-                solved_button = ' ';}
+                }
             if (due){
+                type = 'due';
                 color = 'indianred';
             }
+            let url = 'https://codeforces.com/problemset/problem/' + code;
+            if (judge === 'SPOJ' && !solved) {
+                url = 'https://www.spoj.com/problems/' + code;
+                solved_button = `<button class="btn btn-primary" type="button" style="background-color:darkcyan; text-align: center;padding-right: 11px;margin-right: 18px;height: 35px;width: 86.125px;" onclick="window.location.href='/solved?id=`+id.toString()+`&type=${type}';`+`"><span style="color: white">Solved?</span></button>`
+            }
+            if (judge === 'Leetcode' && !solved) {
+                url = 'https://leetcode.com/problems/' + code;
+                solved_button = `<button class="btn btn-primary" type="button" style="background-color:darkcyan; text-align: center;padding-right: 11px;margin-right: 18px;height: 35px;width: 86.125px;" onclick="window.location.href='/solved?id=`+id.toString()+`&type=${type}';`+`"><span style="color: white">Solved?</span></button>`
+            }
+
 
             let item = `<li class="list-group-item" id=` + id.toString() + ` style="background-color: ` + color + `;">
                             <div class="row align-items-center no-gutters">
