@@ -84,7 +84,8 @@ $(document).ready(function() {
             if (dues_num) dues = `<span class="float-end" style="color: red; white-space:pre;">Have dues</span>`;
             sec += `<h4 class="small fw-bold" style="color:` + color + `">` + name + dues + `</h4>
             <div>
-               <h4 class="small fw-bold"><span class="float-end" style="color: black; padding-left: 20px">` + num.toString() + ` / {{ team.daily_goal }}</span></h4>
+               <h4 class="small fw-bold"><span class="float-end" style="color: black; padding-left: 20px">` + num.toString() + ` / {{ 
+	       .daily_goal }}</span></h4>
             </div>
             <div class="progress progress mb-4">
                <div class="progress-bar bg-gradient-primary"  aria-valuenow="` + (num / {{ team.daily_goal * 100 }}).toString() + `" aria-valuemin="0" aria-valuemax="100" style=" background:` + color + `; width: ` + (num / {{ team.daily_goal * 100 }}).toString() + `%;">
@@ -162,7 +163,7 @@ socket.on('connect', function () {
 
 
 </script>
-{% if not user.team_id %}
+{% if not team %}
 <div class="col text-center" style="margin: 1px;"><a class="btn btn-primary btn-sm d-none d-sm-inline-block" role="button" href="/create-team" style="height: 30.8px;width: 121.325px;"><i class="fas fa-plus fa-sm text-white-50"></i>&nbsp;Create Team</a><a class="btn btn-primary btn-sm d-none d-sm-inline-block" role="button" href="/join-team" style="margin: 13px;"><i class="fas fa-road fa-sm text-white-50"></i>&nbsp; Join Existing Team</a></div>
 {% else %}
 <div class="container-fluid" >
