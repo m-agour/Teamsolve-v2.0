@@ -16,9 +16,8 @@ def home():
 
     team = get_current_team()
     user = get_current_user()
-
     if not team:
-        return render_template("home.html", user=user, team=None, problemset=[], solved=[],
+        return render_template("home.html", user=user, team=False, problemset=[], solved=[],
                                code='', team_mates=[], colors=[])
 
     thread = Thread(target=refresh, args=(team,))
@@ -248,11 +247,14 @@ def update_problem_set():
 
 @socketio.on('update mates progress')
 def update_mates_progress():
+    if not current_user.team_id:
+        return
     # progress of mates
     team_mates = get_team_mates(current_user)
     t_len = len(team_mates)
     team_mates = [[team_mates[i].name, len(get_today_solved_problems(team_mates[i])), len(get_dues_list(team_mates[i])),
                    get_color(i)] for i in range(t_len)]
+    print("passed!")
     socketio.emit('update team mates progress', team_mates)
 
 

@@ -69,7 +69,7 @@ $(document).ready(function() {
     socket.on('message', function (msg) {
         console.log(msg);
     });
-
+    console.log("hello");
     socket.on('update team mates progress', function (team_mates) {
         let progress_list = document.getElementById('team_mates_progress');
         progress_list.innerHTML = '';
@@ -82,6 +82,7 @@ $(document).ready(function() {
             let color = m[3];
             let dues = `<span class="float-end" style="color: forestgreen; white-space:pre;">No dues</span>`
             if (dues_num) dues = `<span class="float-end" style="color: red; white-space:pre;">Have dues</span>`;
+            {% if team and team.daily_goal %}
             sec += `<h4 class="small fw-bold" style="color:` + color + `">` + name + dues + `</h4>
             <div>
                <h4 class="small fw-bold"><span class="float-end" style="color: black; padding-left: 20px">` + num.toString() + ` / {{ team.daily_goal }}</span></h4>
@@ -91,6 +92,7 @@ $(document).ready(function() {
                   <span class="visually-hidden">` + (num / {{ team.daily_goal * 100 }}).toString() + `%</span>
                </div>
             </div>`
+            {% endif %}
         }
         progress_list.innerHTML = sec;
     });
